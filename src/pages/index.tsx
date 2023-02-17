@@ -68,7 +68,7 @@ export default function Home(props: { athletes: Athlete[] }) {
 // This gets called on every request
 export async function getServerSideProps() {
   const roosters = (
-    await axios.get<Rooster[]>("http://localhost:3000/api/rooster")
+    await axios.get<Rooster[]>(`${process.env.BASE_URL}/api/rooster`)
   ).data;
   return { props: { athletes: roosters[0].athletes } };
 }
