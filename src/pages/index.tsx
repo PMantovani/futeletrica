@@ -12,6 +12,14 @@ import { useState } from "react";
 export default function Home(props: { roosters: Rooster[] }) {
   const [selectedColor, setSelectedColor] = useState(colors[0] as ColorObj);
 
+  const athletes = props.roosters.find(
+    (i) => i.color === selectedColor.id
+  )?.athletes;
+  athletes?.sort(
+    (a, b) =>
+      b.position.localeCompare(a.position) || a.name.localeCompare(b.name)
+  );
+
   return (
     <>
       <Head>
@@ -48,16 +56,14 @@ export default function Home(props: { roosters: Rooster[] }) {
         <div></div>
         <div className="soccer-field m-auto mt-6 flex h-full w-full xl:w-8/12">
           <div className="relative w-full">
-            {props.roosters
-              .find((i) => i.color === selectedColor.id)
-              ?.athletes.map((athlete, idx) => (
-                <AthleteCard
-                  athlete={athlete}
-                  color={selectedColor.id}
-                  idx={idx}
-                  key={idx}
-                />
-              ))}
+            {athletes?.map((athlete, idx) => (
+              <AthleteCard
+                athlete={athlete}
+                color={selectedColor.id}
+                idx={idx}
+                key={idx}
+              />
+            ))}
           </div>
         </div>
       </main>
