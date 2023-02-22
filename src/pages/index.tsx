@@ -39,7 +39,7 @@ export default function Home(props: { roosters: Rooster[] }) {
           <h1 className=" ml-4 text-2xl text-yellow">Fut Elétrica 2013</h1>
         </div>
         <div className="mx-auto text-xl text-yellow">
-          Escalação do dia 18/02/2023
+          Escalação do dia 25/02/2023
         </div>
         <div className="mt-8 flex justify-center">
           {colors.map((color, idx) => (
