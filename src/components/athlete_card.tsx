@@ -11,7 +11,7 @@ interface Props {
 
 export const AthleteCard: React.FC<Props> = (props) => {
   const [imgSrc, setImgSrc] = useState(
-    require(`public/assets/athlete_cards/white/fallback.png`)
+    require(`public/images/athlete_cards/white/fallback.png`)
   );
   const [isFallback, setIsFallback] = useState(false);
 
@@ -21,13 +21,13 @@ export const AthleteCard: React.FC<Props> = (props) => {
     setIsInitial(false);
     try {
       setImgSrc(
-        require(`public/assets/athlete_cards/${props.color}/${props.athlete.id}.png`)
+        require(`public/images/athlete_cards/${props.color}/${props.athlete.id}.png`)
       );
       setIsFallback(false);
     } catch (err) {
       setIsFallback(true);
       setImgSrc(
-        require(`public/assets/athlete_cards/${props.color}/fallback.png`)
+        require(`public/images/athlete_cards/${props.color}/fallback.png`)
       );
     }
   };

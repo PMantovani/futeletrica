@@ -1,9 +1,8 @@
 import { AthleteCard } from "@/components/athlete_card";
-import { Athlete } from "@/models/athlete";
 import axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
-import logo from "../../public/assets/logo.png";
+import logo from "../../public/images/logo.png";
 import { Rooster } from "@/models/rooster";
 import { ColorObj, colors } from "@/models/color";
 import { Pill } from "@/components/pill";
@@ -27,7 +26,10 @@ export default function Home(props: { roosters: Rooster[] }) {
         <meta name="description" content="Fut Elétrica 2013" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta property="og:title" content="Fut Elétrica 2013" />
-        <meta property="og:image" content="public/assets/logo.png" />
+        <meta
+          property="og:image"
+          content="https://futeletrica.vercel.app/images/logo.png"
+        />
         <meta
           property="og:description"
           content="Confira a escalação do maior time do sul do mundo!"
