@@ -21,7 +21,7 @@ export default async function handler(
     .select(
       "*, athlete1:Athlete!Rooster_athlete1_fkey(*), athlete2:Athlete!Rooster_athlete2_fkey(*), athlete3:Athlete!Rooster_athlete3_fkey(*), athlete4:Athlete!Rooster_athlete4_fkey(*), athlete5:Athlete!Rooster_athlete5_fkey(*)"
     )
-    .eq("game", 1);
+    .eq("game", 2);
 
   if (error) {
     console.error(error);
