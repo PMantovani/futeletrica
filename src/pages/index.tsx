@@ -19,6 +19,12 @@ export default function Home(props: { roosters: Rooster[] }) {
       b.position.localeCompare(a.position) || a.name.localeCompare(b.name)
   );
 
+  const calculateRoosterAvg = () =>
+    (
+      (athletes?.reduce((prev, cur) => prev + cur.rating, 0) ?? 0) /
+      (athletes?.length ?? 1)
+    ).toFixed(3);
+
   return (
     <>
       <Head>
@@ -63,7 +69,9 @@ export default function Home(props: { roosters: Rooster[] }) {
             </div>
           ))}
         </div>
-        <div></div>
+        <div className="mx-auto mt-8 text-yellow">
+          Nota média do time: {calculateRoosterAvg()}
+        </div>
         <div className="soccer-field m-auto mt-6 flex h-full w-full xl:w-8/12">
           <div className="relative w-full">
             {athletes?.map((athlete, idx) => (
