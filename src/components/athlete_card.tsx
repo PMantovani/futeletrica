@@ -13,7 +13,7 @@ export const AthleteCard: React.FC<Props> = (props) => {
   const [imgSrc, setImgSrc] = useState(
     require(`public/assets/athlete_cards/white/fallback.png`)
   );
-  let isFallback = false;
+  const [isFallback, setIsFallback] = useState(false);
 
   const [isInitial, setIsInitial] = useState(true);
 
@@ -23,8 +23,9 @@ export const AthleteCard: React.FC<Props> = (props) => {
       setImgSrc(
         require(`public/assets/athlete_cards/${props.color}/${props.athlete.id}.png`)
       );
+      setIsFallback(false);
     } catch (err) {
-      isFallback = true;
+      setIsFallback(true);
       setImgSrc(
         require(`public/assets/athlete_cards/${props.color}/fallback.png`)
       );
