@@ -24,8 +24,16 @@ export default function Home(props: { roosters: Rooster[] }) {
     <>
       <Head>
         <title>FutElétrica 2013</title>
-        <meta name="description" content="Fute elétrica 2013" />
+        <meta name="description" content="Fut Elétrica 2013" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:title" content="Fut Elétrica 2013" />
+        <meta property="og:image" content="public/assets/logo.png" />
+        <meta
+          property="og:description"
+          content="Confira a escalação do maior time do sul do mundo!"
+        />
+        <meta property="og:image:width" content="457" />
+        <meta property="og:image:height" content="545" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex h-screen flex-col bg-neutral-900">
