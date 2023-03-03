@@ -8,8 +8,10 @@ import { Pill } from "@/components/pill";
 import { useState } from "react";
 import { GetServerSidePropsContext } from "next";
 import { Header } from "@/components/header";
+import { Game } from "@/models/game";
+import { formatDate } from "@/formatters/date_formatter";
 
-export default function Home(props: { rosters: Roster[] }) {
+export default function Home(props: { rosters: Roster[]; game: Game }) {
   const [selectedColor, setSelectedColor] = useState(colors[0] as ColorObj);
 
   const athletes = props.rosters.find(
@@ -31,7 +33,7 @@ export default function Home(props: { rosters: Roster[] }) {
       <main className="flex h-screen flex-col bg-neutral-900">
         <Header />
         <div className="mx-auto text-xl text-yellow">
-          Escalação do dia 04/03/2023
+          Escalação do dia {formatDate(props.game.game_date)}
         </div>
         <div className="mt-8 flex justify-center">
           {colors.map((color, idx) => (
@@ -71,5 +73,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       `${process.env.BASE_URL}/api/game/${context.query.gameId}/roster`
     )
   ).data;
-  return { props: { rosters: rosters } };
+  const game = (
+    await axios.get<Game>(
+      `${process.env.BASE_URL}/api/game/${context.query.gameId}`
+    )
+  ).data;
+  return { props: { rosters: rosters, game } };
 }
