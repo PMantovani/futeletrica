@@ -1,11 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { Rooster, RoosterDbWithJoin } from "@/models/rooster";
+import { Roster, RosterDbWithJoin } from "@/models/roster";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { createClient } from "@supabase/supabase-js";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Rooster[]>
+  res: NextApiResponse<Roster[]>
 ) {
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_KEY;
@@ -17,9 +17,9 @@ export default async function handler(
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   const { data, error } = await supabase
-    .from("Rooster")
+    .from("Roster")
     .select(
-      "*, athlete1:Athlete!Rooster_athlete1_fkey(*), athlete2:Athlete!Rooster_athlete2_fkey(*), athlete3:Athlete!Rooster_athlete3_fkey(*), athlete4:Athlete!Rooster_athlete4_fkey(*), athlete5:Athlete!Rooster_athlete5_fkey(*)"
+      "*, athlete1:Athlete!Roster_athlete1_fkey(*), athlete2:Athlete!Roster_athlete2_fkey(*), athlete3:Athlete!Roster_athlete3_fkey(*), athlete4:Athlete!Roster_athlete4_fkey(*), athlete5:Athlete!Roster_athlete5_fkey(*)"
     )
     .eq("game", 3);
 
@@ -27,7 +27,7 @@ export default async function handler(
     console.error(error);
     res.status(500);
   } else {
-    const result: Rooster[] = data.map((i: RoosterDbWithJoin) => ({
+    const result: Roster[] = data.map((i: RosterDbWithJoin) => ({
       id: i.id,
       game: i.game,
       color: i.color,

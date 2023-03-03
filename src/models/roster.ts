@@ -1,7 +1,7 @@
 import { Athlete } from "./athlete";
 import { Color } from "./color";
 
-export interface Rooster {
+export interface Roster {
   id: string;
   game: string;
   color: Color;
@@ -9,7 +9,7 @@ export interface Rooster {
   created_at: string;
 }
 
-export interface RoosterDbWithJoin {
+export interface RosterDbWithJoin {
   id: string;
   game: string;
   color: Color;

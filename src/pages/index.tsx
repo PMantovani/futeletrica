@@ -3,15 +3,15 @@ import axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
 import logo from "../../public/images/logo.png";
-import { Rooster } from "@/models/rooster";
+import { Roster } from "@/models/roster";
 import { ColorObj, colors } from "@/models/color";
 import { Pill } from "@/components/pill";
 import { useState } from "react";
 
-export default function Home(props: { roosters: Rooster[] }) {
+export default function Home(props: { rosters: Roster[] }) {
   const [selectedColor, setSelectedColor] = useState(colors[0] as ColorObj);
 
-  const athletes = props.roosters.find(
+  const athletes = props.rosters.find(
     (i) => i.color === selectedColor.id
   )?.athletes;
   athletes?.sort(
@@ -19,7 +19,7 @@ export default function Home(props: { roosters: Rooster[] }) {
       b.position.localeCompare(a.position) || a.name.localeCompare(b.name)
   );
 
-  const calculateRoosterAvg = () =>
+  const calculateRosterAvg = () =>
     (
       (athletes?.reduce((prev, cur) => prev + cur.rating, 0) ?? 0) /
       (athletes?.length ?? 1)
@@ -70,7 +70,7 @@ export default function Home(props: { roosters: Rooster[] }) {
           ))}
         </div>
         <div className="mx-auto mt-8 text-yellow">
-          Nota média do time: {calculateRoosterAvg()}
+          Nota média do time: {calculateRosterAvg()}
         </div>
         <div className="soccer-field m-auto mt-6 flex h-full w-full xl:w-8/12">
           <div className="relative w-full">
@@ -90,8 +90,8 @@ export default function Home(props: { roosters: Rooster[] }) {
 }
 
 export async function getServerSideProps() {
-  const roosters = (
-    await axios.get<Rooster[]>(`${process.env.BASE_URL}/api/rooster`)
+  const rosters = (
+    await axios.get<Roster[]>(`${process.env.BASE_URL}/api/roster`)
   ).data;
-  return { props: { roosters } };
+  return { props: { rosters: rosters } };
 }
