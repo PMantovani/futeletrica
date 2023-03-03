@@ -174,6 +174,7 @@ table {
 }
 
 .soccer-field {
+  background-color: rgb(0, 0, 0);
   background-image: url("../../public/images/field.png");
   background-size: cover;
   background-position: center;
