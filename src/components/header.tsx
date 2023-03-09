@@ -6,8 +6,6 @@ import { useRouter } from "next/router";
 export const Header: React.FC<{}> = () => {
   const router = useRouter();
 
-  console.log(router.pathname);
-
   const onBackButton = () => {
     router.back();
   };

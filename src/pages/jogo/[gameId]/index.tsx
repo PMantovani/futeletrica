@@ -7,7 +7,7 @@ import { Button } from "@/components/button";
 import Link from "next/link";
 import { Header } from "@/components/header";
 
-export default function Home(props: { game: Game }) {
+export default function Home(props: { game: Game; hasResults: boolean }) {
   return (
     <>
       <main className="flex h-screen flex-col bg-neutral-900">
@@ -19,6 +19,11 @@ export default function Home(props: { game: Game }) {
           <Button>
             <Link href={`/jogo/${props.game.id}/escalacao`}>Escalação</Link>
           </Button>
+          {props.hasResults && (
+            <Button>
+              <Link href={`/jogo/${props.game.id}/resultados`}>Resultados</Link>
+            </Button>
+          )}
         </div>
       </main>
     </>
@@ -31,5 +36,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const game = (
     await axios.get<Roster[]>(`${process.env.BASE_URL}/api/game/${gameId}`)
   ).data;
-  return { props: { game: game } };
+
+  const results = (
+    await axios.get<Roster[]>(
+      `${process.env.BASE_URL}/api/game/${gameId}/results`
+    )
+  ).data;
+
+  return { props: { game: game, hasResults: results.length > 0 } };
 }
