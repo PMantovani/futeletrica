@@ -70,8 +70,8 @@ export const Standings: React.FC<{ results: GameResult[] }> = ({ results }) => {
     );
 
   return (
-    <div className="mx-auto">
-      <table>
+    <div className="mx-auto max-w-full">
+      <table className="block overflow-x-auto whitespace-nowrap">
         <thead className="text-center text-sm uppercase text-neutral-500">
           <tr className="border-b-2 border-solid border-neutral-800">
             <th className="px-3 py-3 even:bg-neutral-800">Classificação</th>
