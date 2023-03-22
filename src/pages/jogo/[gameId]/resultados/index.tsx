@@ -11,6 +11,8 @@ import { GameResult } from "@/models/game_result";
 import { Main } from "@/components/main";
 import { Results } from "@/components/results";
 import { Standings } from "@/components/standings";
+import { PageHead } from "@/components/page_head";
+import { formatDate } from "@/formatters/date_formatter";
 
 export default function Home(props: { results: GameResult[]; game: Game }) {
   const [mode, setMode] = useState<"results" | "standings">("results");
@@ -18,28 +20,18 @@ export default function Home(props: { results: GameResult[]; game: Game }) {
 
   return (
     <>
+      <PageHead description={`Confira os resultados do jogo do dia ${formatDate(props.game.game_date)}`} />
       <Main>
         <Header />
         <div className="mx-auto flex pb-6">
-          <Pill
-            className="mr-4"
-            isSelected={mode === "results"}
-            onClick={() => setMode("results")}
-          >
+          <Pill className="mr-4" isSelected={mode === "results"} onClick={() => setMode("results")}>
             Resultados
           </Pill>
-          <Pill
-            isSelected={mode === "standings"}
-            onClick={() => setMode("standings")}
-          >
+          <Pill isSelected={mode === "standings"} onClick={() => setMode("standings")}>
             Classificação
           </Pill>
         </div>
-        {mode === "results" ? (
-          <Results results={sortedResults} />
-        ) : (
-          <Standings results={sortedResults} />
-        )}
+        {mode === "results" ? <Results results={sortedResults} /> : <Standings results={sortedResults} />}
       </Main>
     </>
   );
@@ -47,14 +39,8 @@ export default function Home(props: { results: GameResult[]; game: Game }) {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const results = (
-    await axios.get<GameResult[]>(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${context.query.gameId}/results`
-    )
+    await axios.get<GameResult[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${context.query.gameId}/results`)
   ).data;
-  const game = (
-    await axios.get<Game>(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${context.query.gameId}`
-    )
-  ).data;
+  const game = (await axios.get<Game>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${context.query.gameId}`)).data;
   return { props: { results, game } };
 }

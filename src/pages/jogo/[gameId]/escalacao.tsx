@@ -10,55 +10,37 @@ import { GetServerSidePropsContext } from "next";
 import { Header } from "@/components/header";
 import { Game } from "@/models/game";
 import { formatDate } from "@/formatters/date_formatter";
+import { PageHead } from "@/components/page_head";
 
 export default function Home(props: { rosters: Roster[]; game: Game }) {
   const [selectedColor, setSelectedColor] = useState(colors[0] as ColorObj);
 
-  const athletes = props.rosters.find(
-    (i) => i.color === selectedColor.id
-  )?.athletes;
-  athletes?.sort(
-    (a, b) =>
-      b.position.localeCompare(a.position) || a.name.localeCompare(b.name)
-  );
+  const athletes = props.rosters.find((i) => i.color === selectedColor.id)?.athletes;
+  athletes?.sort((a, b) => b.position.localeCompare(a.position) || a.name.localeCompare(b.name));
 
   const calculateRosterAvg = () =>
-    (
-      (athletes?.reduce((prev, cur) => prev + cur.rating, 0) ?? 0) /
-      (athletes?.length ?? 1)
-    ).toFixed(3);
+    ((athletes?.reduce((prev, cur) => prev + cur.rating, 0) ?? 0) / (athletes?.length ?? 1)).toFixed(3);
 
   return (
     <>
+      <PageHead description={`Confira a escalação do jogo do dia ${formatDate(props.game.game_date)}`} />
       <main className="flex h-screen flex-col bg-neutral-900">
         <Header />
-        <div className="mx-auto text-xl text-yellow">
-          Escalação do dia {formatDate(props.game.game_date)}
-        </div>
+        <div className="mx-auto text-xl text-yellow">Escalação do dia {formatDate(props.game.game_date)}</div>
         <div className="mt-8 flex justify-center">
           {colors.map((color, idx) => (
             <div className="mx-1" key={idx}>
-              <Pill
-                isSelected={selectedColor === colors[idx]}
-                onClick={() => setSelectedColor(colors[idx])}
-              >
+              <Pill isSelected={selectedColor === colors[idx]} onClick={() => setSelectedColor(colors[idx])}>
                 {color.label}
               </Pill>
             </div>
           ))}
         </div>
-        <div className="mx-auto mt-8 text-yellow">
-          Nota média do time: {calculateRosterAvg()}
-        </div>
+        <div className="mx-auto mt-8 text-yellow">Nota média do time: {calculateRosterAvg()}</div>
         <div className="soccer-field m-auto mt-6 flex h-full w-full xl:w-8/12">
           <div className="relative w-full">
             {athletes?.map((athlete, idx) => (
-              <AthleteCard
-                athlete={athlete}
-                color={selectedColor.id}
-                idx={idx}
-                key={idx}
-              />
+              <AthleteCard athlete={athlete} color={selectedColor.id} idx={idx} key={idx} />
             ))}
           </div>
         </div>
@@ -69,14 +51,8 @@ export default function Home(props: { rosters: Roster[]; game: Game }) {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const rosters = (
-    await axios.get<Roster[]>(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${context.query.gameId}/roster`
-    )
+    await axios.get<Roster[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${context.query.gameId}/roster`)
   ).data;
-  const game = (
-    await axios.get<Game>(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${context.query.gameId}`
-    )
-  ).data;
+  const game = (await axios.get<Game>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${context.query.gameId}`)).data;
   return { props: { rosters, game } };
 }
