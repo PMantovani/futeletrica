@@ -52,6 +52,19 @@ table {
   border-spacing: 0;
 }
 
+/* Remove arrows from number inputs */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 @font-face {
   font-family: "NotoSans";
   src: url("../../public/assets/Noto_Sans/NotoSans-Thin.ttf") format("truetype");
@@ -59,8 +72,7 @@ table {
 }
 @font-face {
   font-family: "NotoSans";
-  src: url("../../public/assets/Noto_Sans/NotoSans-ThinItalic.ttf")
-    format("truetype");
+  src: url("../../public/assets/Noto_Sans/NotoSans-ThinItalic.ttf") format("truetype");
   font-weight: 100;
   font-style: italic;
 }
@@ -71,61 +83,52 @@ table {
 }
 @font-face {
   font-family: "NotoSans";
-  src: url("../../public/assets/Noto_Sans/NotoSans-ThinItalic.ttf")
-    format("truetype");
+  src: url("../../public/assets/Noto_Sans/NotoSans-ThinItalic.ttf") format("truetype");
   font-weight: 200;
   font-style: italic;
 }
 @font-face {
   font-family: "NotoSans";
-  src: url("../../public/assets/Noto_Sans/NotoSans-Light.ttf")
-    format("truetype");
+  src: url("../../public/assets/Noto_Sans/NotoSans-Light.ttf") format("truetype");
   font-weight: 300;
 }
 @font-face {
   font-family: "NotoSans";
-  src: url("../../public/assets/Noto_Sans/NotoSans-LightItalic.ttf")
-    format("truetype");
+  src: url("../../public/assets/Noto_Sans/NotoSans-LightItalic.ttf") format("truetype");
   font-weight: 300;
   font-style: italic;
 }
 
 @font-face {
   font-family: "NotoSans";
-  src: url("../../public/assets/Noto_Sans/NotoSans-Medium.ttf")
-    format("truetype");
+  src: url("../../public/assets/Noto_Sans/NotoSans-Medium.ttf") format("truetype");
   font-weight: 400;
 }
 @font-face {
   font-family: "NotoSans";
-  src: url("../../public/assets/Noto_Sans/NotoSans-MediumItalic.ttf")
-    format("truetype");
+  src: url("../../public/assets/Noto_Sans/NotoSans-MediumItalic.ttf") format("truetype");
   font-weight: 400;
   font-style: italic;
 }
 @font-face {
   font-family: "NotoSans";
-  src: url("../../public/assets/Noto_Sans/NotoSans-Medium.ttf")
-    format("truetype");
+  src: url("../../public/assets/Noto_Sans/NotoSans-Medium.ttf") format("truetype");
   font-weight: 500;
 }
 @font-face {
   font-family: "NotoSans";
-  src: url("../../public/assets/Noto_Sans/NotoSans-MediumItalic.ttf")
-    format("truetype");
+  src: url("../../public/assets/Noto_Sans/NotoSans-MediumItalic.ttf") format("truetype");
   font-weight: 500;
   font-style: italic;
 }
 @font-face {
   font-family: "NotoSans";
-  src: url("../../public/assets/Noto_Sans/NotoSans-SemiBold.ttf")
-    format("truetype");
+  src: url("../../public/assets/Noto_Sans/NotoSans-SemiBold.ttf") format("truetype");
   font-weight: 600;
 }
 @font-face {
   font-family: "NotoSans";
-  src: url("../../public/assets/Noto_Sans/NotoSans-SemiBoldItalic.ttf")
-    format("truetype");
+  src: url("../../public/assets/Noto_Sans/NotoSans-SemiBoldItalic.ttf") format("truetype");
   font-weight: 600;
   font-style: italic;
 }
@@ -137,8 +140,7 @@ table {
 }
 @font-face {
   font-family: "NotoSans";
-  src: url("../../public/assets/Noto_Sans/NotoSans-BoldItalic.ttf")
-    format("truetype");
+  src: url("../../public/assets/Noto_Sans/NotoSans-BoldItalic.ttf") format("truetype");
   font-weight: 700;
   font-style: italic;
 }
@@ -149,22 +151,19 @@ table {
 }
 @font-face {
   font-family: "NotoSans";
-  src: url("../../public/assets/Noto_Sans/NotoSans-BoldItalic.ttf")
-    format("truetype");
+  src: url("../../public/assets/Noto_Sans/NotoSans-BoldItalic.ttf") format("truetype");
   font-weight: 800;
   font-style: italic;
 }
 
 @font-face {
   font-family: "NotoSans";
-  src: url("../../public/assets/Noto_Sans/NotoSans-ExtraBold.ttf")
-    format("truetype");
+  src: url("../../public/assets/Noto_Sans/NotoSans-ExtraBold.ttf") format("truetype");
   font-weight: 900;
 }
 @font-face {
   font-family: "NotoSans";
-  src: url("../../public/assets/Noto_Sans/NotoSans-ExtraBoldItalic.ttf")
-    format("truetype");
+  src: url("../../public/assets/Noto_Sans/NotoSans-ExtraBoldItalic.ttf") format("truetype");
   font-weight: 900;
   font-style: italic;
 }

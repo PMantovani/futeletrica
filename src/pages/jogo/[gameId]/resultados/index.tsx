@@ -48,12 +48,12 @@ export default function Home(props: { results: GameResult[]; game: Game }) {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const results = (
     await axios.get<GameResult[]>(
-      `${process.env.BASE_URL}/api/game/${context.query.gameId}/results`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${context.query.gameId}/results`
     )
   ).data;
   const game = (
     await axios.get<Game>(
-      `${process.env.BASE_URL}/api/game/${context.query.gameId}`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${context.query.gameId}`
     )
   ).data;
   return { props: { results, game } };

@@ -34,12 +34,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const gameId = context.query.gameId;
 
   const game = (
-    await axios.get<Roster[]>(`${process.env.BASE_URL}/api/game/${gameId}`)
+    await axios.get<Roster[]>(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${gameId}`
+    )
   ).data;
 
   const results = (
     await axios.get<Roster[]>(
-      `${process.env.BASE_URL}/api/game/${gameId}/results`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${gameId}/results`
     )
   ).data;
 

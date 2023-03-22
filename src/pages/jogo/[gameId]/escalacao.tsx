@@ -70,13 +70,13 @@ export default function Home(props: { rosters: Roster[]; game: Game }) {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const rosters = (
     await axios.get<Roster[]>(
-      `${process.env.BASE_URL}/api/game/${context.query.gameId}/roster`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${context.query.gameId}/roster`
     )
   ).data;
   const game = (
     await axios.get<Game>(
-      `${process.env.BASE_URL}/api/game/${context.query.gameId}`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${context.query.gameId}`
     )
   ).data;
-  return { props: { rosters: rosters, game } };
+  return { props: { rosters, game } };
 }

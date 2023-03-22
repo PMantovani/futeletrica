@@ -50,7 +50,8 @@ export default function Home(props: { games: Game[] }) {
 }
 
 export async function getServerSideProps() {
-  const games = (await axios.get<Roster[]>(`${process.env.BASE_URL}/api/game`))
-    .data;
+  const games = (
+    await axios.get<Roster[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/game`)
+  ).data;
   return { props: { games: games } };
 }
