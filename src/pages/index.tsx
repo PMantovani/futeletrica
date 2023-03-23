@@ -1,15 +1,15 @@
-import axios from "axios";
-import Head from "next/head";
-import { Roster } from "@/models/roster";
-import { Game } from "@/models/game";
 import { formatDate } from "@/formatters/date_formatter";
 import Link from "next/link";
 import { Button } from "@/components/button";
 import { Header } from "@/components/header";
 import { PageHead } from "@/components/page_head";
+import { trpc } from "@/utils/trpc";
+import { GetServerSidePropsContext } from "next";
+import { ssg } from "@/server/utils/ssg_helper";
 
-export default function Home(props: { games: Game[] }) {
-  const sortedGames = [...props.games].sort((a, b) => b.game_date.localeCompare(a.game_date));
+export default function Home() {
+  const allGamesQuery = trpc.game.findAll.useQuery();
+  const sortedGames = [...(allGamesQuery.data ?? [])].sort((a, b) => b.game_date.localeCompare(a.game_date));
   return (
     <>
       <PageHead description="Confira a escalação do maior time do sul do mundo!" />
@@ -28,7 +28,12 @@ export default function Home(props: { games: Game[] }) {
   );
 }
 
-export async function getServerSideProps() {
-  const games = (await axios.get<Roster[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/game`)).data;
-  return { props: { games: games } };
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  await ssg.game.findAll.prefetch();
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+  };
 }

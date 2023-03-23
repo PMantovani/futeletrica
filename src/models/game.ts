@@ -1,5 +1,5 @@
 export interface Game {
-  id: string;
+  id: number;
   game_date: string;
   created_at: string;
 }

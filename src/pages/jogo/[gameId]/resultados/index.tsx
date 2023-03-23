@@ -1,26 +1,34 @@
-import { AthleteCard } from "@/components/athlete_card";
-import axios from "axios";
-import { Roster } from "@/models/roster";
-import { Color, colorLabelsMap, ColorObj, colors } from "@/models/color";
 import { Pill } from "@/components/pill";
 import { useState } from "react";
 import { GetServerSidePropsContext } from "next";
 import { Header } from "@/components/header";
-import { Game } from "@/models/game";
-import { GameResult } from "@/models/game_result";
 import { Main } from "@/components/main";
 import { Results } from "@/components/results";
 import { Standings } from "@/components/standings";
 import { PageHead } from "@/components/page_head";
 import { formatDate } from "@/formatters/date_formatter";
+import { ssg } from "@/server/utils/ssg_helper";
+import { useRouter } from "next/router";
+import { trpc } from "@/utils/trpc";
+import { validateRouterQueryToNumber } from "@/utils/validate_router_query";
 
-export default function Home(props: { results: GameResult[]; game: Game }) {
+export default function Home() {
+  const router = useRouter();
+  const gameIdNumber = validateRouterQueryToNumber(router.query.gameId);
+
+  const gameQuery = trpc.game.findById.useQuery(gameIdNumber);
+  const gameResultsQuery = trpc.game.gameResults.findAllByGameId.useQuery(gameIdNumber);
+
+  if (!gameQuery.data || !gameResultsQuery.data) {
+    throw "Data not prefetched from SSG";
+  }
+
   const [mode, setMode] = useState<"results" | "standings">("results");
-  const sortedResults = [...props.results].sort((a, b) => a.match - b.match);
+  const sortedResults = [...gameResultsQuery.data].sort((a, b) => a.match - b.match);
 
   return (
     <>
-      <PageHead description={`Confira os resultados do jogo do dia ${formatDate(props.game.game_date)}`} />
+      <PageHead description={`Confira os resultados do jogo do dia ${formatDate(gameQuery.data.game_date)}`} />
       <Main>
         <Header />
         <div className="mx-auto flex pb-6">
@@ -38,9 +46,13 @@ export default function Home(props: { results: GameResult[]; game: Game }) {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const results = (
-    await axios.get<GameResult[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${context.query.gameId}/results`)
-  ).data;
-  const game = (await axios.get<Game>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${context.query.gameId}`)).data;
-  return { props: { results, game } };
+  const gameId = validateRouterQueryToNumber(context.query.gameId);
+
+  await Promise.all([ssg.game.findById.prefetch(gameId), ssg.game.gameResults.findAllByGameId.prefetch(gameId)]);
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+  };
 }

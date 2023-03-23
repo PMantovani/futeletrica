@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export const colors = [
   { id: "white", label: "Branco" },
   { id: "blue", label: "Azul" },
@@ -11,4 +13,5 @@ export const colorLabelsMap = colors.reduce(
 
 export type ColorObj = (typeof colors)[number];
 
-export type Color = (typeof colors)[number]["id"];
+export const colorSchema = z.enum(["white", "blue", "yellow"]);
+export type Color = z.infer<typeof colorSchema>;

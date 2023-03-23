@@ -1,20 +1,35 @@
-import axios from "axios";
 import { GetServerSidePropsContext } from "next";
 import { Header } from "@/components/header";
-import { Game } from "@/models/game";
-import { GameResult, GameResultInput } from "@/models/game_result";
+import { convertGameResultInput, GameResult, GameResultInput } from "@/models/game_result";
 import { Main } from "@/components/main";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Color, colorLabelsMap } from "@/models/color";
 import { Button } from "@/components/button";
+import { ssg } from "@/server/utils/ssg_helper";
+import { validateRouterQueryToNumber } from "@/utils/validate_router_query";
+import { useRouter } from "next/router";
+import { trpc } from "@/utils/trpc";
 
-export default function Home(props: { results: GameResult[]; game: Game }) {
+export default function Home() {
+  const router = useRouter();
+  const gameIdNumber = validateRouterQueryToNumber(router.query.gameId);
+
+  const gameQuery = trpc.game.findById.useQuery(gameIdNumber);
+  const gameResultsQuery = trpc.game.gameResults.findAllByGameId.useQuery(gameIdNumber);
+
+  const createResultsMutation = trpc.game.gameResults.createResults.useMutation();
+  const updateResultsMutation = trpc.game.gameResults.updateResults.useMutation();
+
+  if (!gameQuery.data || !gameResultsQuery.data) {
+    throw "Data not prefetched from SSG";
+  }
+
   const [results, setResults] = useState<GameResultInput[]>([]);
-  const [isNewResult, setIsNewResult] = useState(props.results.length === 0);
+  const [isNewResult, setIsNewResult] = useState(gameResultsQuery.data.length === 0);
 
   useEffect(() => {
     if (!isNewResult) {
-      setResults(props.results);
+      setResults(gameResultsQuery.data);
     } else {
       setResults([
         {
@@ -23,7 +38,7 @@ export default function Home(props: { results: GameResult[]; game: Game }) {
           goals1: 0,
           goals2: 0,
           match: 0,
-          game: props.game.id,
+          game: gameQuery.data.id,
         },
         {
           color1: "yellow",
@@ -31,7 +46,7 @@ export default function Home(props: { results: GameResult[]; game: Game }) {
           goals1: 0,
           goals2: 0,
           match: 1,
-          game: props.game.id,
+          game: gameQuery.data.id,
         },
         {
           color1: "white",
@@ -39,7 +54,7 @@ export default function Home(props: { results: GameResult[]; game: Game }) {
           goals1: 0,
           goals2: 0,
           match: 2,
-          game: props.game.id,
+          game: gameQuery.data.id,
         },
         {
           color1: "white",
@@ -47,7 +62,7 @@ export default function Home(props: { results: GameResult[]; game: Game }) {
           goals1: 0,
           goals2: 0,
           match: 3,
-          game: props.game.id,
+          game: gameQuery.data.id,
         },
         {
           color1: "blue",
@@ -55,7 +70,7 @@ export default function Home(props: { results: GameResult[]; game: Game }) {
           goals1: 0,
           goals2: 0,
           match: 4,
-          game: props.game.id,
+          game: gameQuery.data.id,
         },
         {
           color1: "blue",
@@ -63,7 +78,7 @@ export default function Home(props: { results: GameResult[]; game: Game }) {
           goals1: 0,
           goals2: 0,
           match: 5,
-          game: props.game.id,
+          game: gameQuery.data.id,
         },
         {
           color1: "yellow",
@@ -71,7 +86,7 @@ export default function Home(props: { results: GameResult[]; game: Game }) {
           goals1: 0,
           goals2: 0,
           match: 6,
-          game: props.game.id,
+          game: gameQuery.data.id,
         },
         {
           color1: "yellow",
@@ -79,7 +94,7 @@ export default function Home(props: { results: GameResult[]; game: Game }) {
           goals1: 0,
           goals2: 0,
           match: 7,
-          game: props.game.id,
+          game: gameQuery.data.id,
         },
         {
           color1: "white",
@@ -87,11 +102,11 @@ export default function Home(props: { results: GameResult[]; game: Game }) {
           goals1: 0,
           goals2: 0,
           match: 8,
-          game: props.game.id,
+          game: gameQuery.data.id,
         },
       ]);
     }
-  }, []);
+  }, [gameResultsQuery.data]);
 
   const onTeamGoalChange = (evt: ChangeEvent<HTMLInputElement>, idx: number, prop: keyof GameResultInput) => {
     setResults(
@@ -106,22 +121,12 @@ export default function Home(props: { results: GameResult[]; game: Game }) {
   const save = async () => {
     if (isValid()) {
       if (isNewResult) {
-        const updatedResults = (
-          await axios.post<GameResult[]>(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${props.game.id}/results`,
-            results
-          )
-        ).data;
+        await createResultsMutation.mutateAsync(results.map((i) => convertGameResultInput(i)));
+        gameResultsQuery.refetch();
         setIsNewResult(false);
-        setResults(updatedResults);
       } else {
-        const updatedResults = (
-          await axios.put<GameResult[]>(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${props.game.id}/results`,
-            results
-          )
-        ).data;
-        setResults(updatedResults);
+        await updateResultsMutation.mutateAsync(results.map((i) => convertGameResultInput(i)) as GameResult[]);
+        gameResultsQuery.refetch();
       }
       return;
     }
@@ -175,9 +180,12 @@ const Team: React.FC<{ color: Color }> = ({ color }) => (
 );
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const results = (
-    await axios.get<GameResult[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${context.query.gameId}/results`)
-  ).data;
-  const game = (await axios.get<Game>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/game/${context.query.gameId}`)).data;
-  return { props: { results, game } };
+  const gameId = validateRouterQueryToNumber(context.query.gameId);
+  await Promise.all([ssg.game.findById.prefetch(gameId), ssg.game.gameResults.findAllByGameId.prefetch(gameId)]);
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+  };
 }
