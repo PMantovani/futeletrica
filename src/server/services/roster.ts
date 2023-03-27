@@ -7,9 +7,9 @@ export const findAllRostersByGameId = async (gameId: number) => {
   const { data, error } = await supabase
     .from("Roster")
     .select(
-      "*, athlete1:Athlete!Roster_athlete1_fkey(*), athlete2:Athlete!Roster_athlete2_fkey(*), athlete3:Athlete!Roster_athlete3_fkey(*), athlete4:Athlete!Roster_athlete4_fkey(*), athlete5:Athlete!Roster_athlete5_fkey(*)"
+      "*, athlete1Id:Athlete!Roster_athlete1Id_fkey(*), athlete2Id:Athlete!Roster_athlete2Id_fkey(*), athlete3Id:Athlete!Roster_athlete3Id_fkey(*), athlete4Id:Athlete!Roster_athlete4Id_fkey(*), athlete5Id:Athlete!Roster_athlete5Id_fkey(*)"
     )
-    .eq("game", gameId);
+    .eq("gameId", gameId);
 
   if (error) {
     throw error;
@@ -17,10 +17,10 @@ export const findAllRostersByGameId = async (gameId: number) => {
 
   const result: Roster[] = data.map((i: RosterDbWithJoin) => ({
     id: i.id,
-    game: i.game,
+    gameId: i.gameId,
     color: i.color,
-    athletes: [i.athlete1, i.athlete2, i.athlete3, i.athlete4, i.athlete5],
-    created_at: i.created_at,
+    athletes: [i.athlete1Id, i.athlete2Id, i.athlete3Id, i.athlete4Id, i.athlete5Id],
+    createdAt: i.createdAt,
   }));
   return result;
 };

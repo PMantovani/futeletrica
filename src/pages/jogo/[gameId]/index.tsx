@@ -22,11 +22,11 @@ export default function Home() {
 
   return (
     <>
-      <PageHead description={`Confira os dados do jogo do dia ${formatDate(gameQuery.data.game_date)}`} />
+      <PageHead description={`Confira os dados do jogo do dia ${formatDate(gameQuery.data.gameDate)}`} />
       <main className="flex h-screen flex-col bg-neutral-900">
         <Header />
         <div className="flex flex-col items-center">
-          <h2 className="mb-4 text-xl font-bold text-yellow">Jogo do dia {formatDate(gameQuery.data.game_date)}</h2>
+          <h2 className="mb-4 text-xl font-bold text-yellow">Jogo do dia {formatDate(gameQuery.data.gameDate)}</h2>
           <Button>
             <Link href={`/jogo/${gameQuery.data.id}/escalacao`}>Escalação</Link>
           </Button>

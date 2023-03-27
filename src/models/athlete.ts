@@ -3,5 +3,5 @@ export interface Athlete {
   name: string;
   rating: number;
   position: string;
-  created_at: string;
+  createdAt: string;
 }

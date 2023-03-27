@@ -28,7 +28,7 @@ export default function Home() {
 
   return (
     <>
-      <PageHead description={`Confira os resultados do jogo do dia ${formatDate(gameQuery.data.game_date)}`} />
+      <PageHead description={`Confira os resultados do jogo do dia ${formatDate(gameQuery.data.gameDate)}`} />
       <Main>
         <Header />
         <div className="mx-auto flex pb-6">

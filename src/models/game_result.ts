@@ -3,13 +3,13 @@ import { colorSchema } from "./color";
 
 export const gameResultSchema = z.object({
   id: z.number(),
-  game: z.number(),
+  gameId: z.number(),
   match: z.number(),
   color1: colorSchema,
   goals1: z.number(),
   color2: colorSchema,
   goals2: z.number(),
-  created_at: z.string(),
+  createdAt: z.string(),
 });
 
 export const newGameResultSchema = gameResultSchema.omit({ id: true, created_at: true });
@@ -35,7 +35,7 @@ export function convertGameResultInput(input: GameResultInput): NewGameResult | 
     throw new Error("Goals are not parseable to numbers");
   }
 
-  if (!input.id || !input.created_at) {
+  if (!input.id || !input.createdAt) {
     const result: NewGameResult = {
       ...input,
       goals1,
@@ -46,7 +46,7 @@ export function convertGameResultInput(input: GameResultInput): NewGameResult | 
     const result: GameResult = {
       ...input,
       id: input.id,
-      created_at: input.created_at,
+      createdAt: input.createdAt,
       goals1,
       goals2,
     };

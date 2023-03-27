@@ -3,7 +3,7 @@ import { createSupabaseClient } from "../utils/supabase_client";
 
 export const findGameResultsByGameId = async (gameId: number) => {
   const supabase = createSupabaseClient();
-  const { data, error } = await supabase.from("GameResult").select().eq("game", gameId);
+  const { data, error } = await supabase.from("GameResult").select().eq("gameId", gameId);
 
   if (error) {
     throw error;

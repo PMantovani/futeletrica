@@ -32,10 +32,10 @@ export default function Home() {
 
   return (
     <>
-      <PageHead description={`Confira a escalação do jogo do dia ${formatDate(gameQuery.data.game_date)}`} />
+      <PageHead description={`Confira a escalação do jogo do dia ${formatDate(gameQuery.data.gameDate)}`} />
       <main className="flex h-screen flex-col bg-neutral-900">
         <Header />
-        <div className="mx-auto text-xl text-yellow">Escalação do dia {formatDate(gameQuery.data.game_date)}</div>
+        <div className="mx-auto text-xl text-yellow">Escalação do dia {formatDate(gameQuery.data.gameDate)}</div>
         <div className="mt-8 flex justify-center">
           {colors.map((color, idx) => (
             <div className="mx-1" key={idx}>

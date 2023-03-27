@@ -9,7 +9,7 @@ import { ssg } from "@/server/utils/ssg_helper";
 
 export default function Home() {
   const allGamesQuery = trpc.game.findAll.useQuery();
-  const sortedGames = [...(allGamesQuery.data ?? [])].sort((a, b) => b.game_date.localeCompare(a.game_date));
+  const sortedGames = [...(allGamesQuery.data ?? [])].sort((a, b) => b.gameDate.localeCompare(a.gameDate));
   return (
     <>
       <PageHead description="Confira a escalação do maior time do sul do mundo!" />
@@ -19,7 +19,7 @@ export default function Home() {
           <h2 className="mb-4 text-xl font-bold text-yellow">Jogos do Fut Elétrica</h2>
           {sortedGames.map((game, idx) => (
             <Button key={idx}>
-              <Link href={`/jogo/${game.id}`}>{"Jogo do dia " + formatDate(game.game_date)}</Link>
+              <Link href={`/jogo/${game.id}`}>{"Jogo do dia " + formatDate(game.gameDate)}</Link>
             </Button>
           ))}
         </div>

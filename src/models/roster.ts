@@ -3,20 +3,20 @@ import { Color } from "./color";
 
 export interface Roster {
   id: string;
-  game: string;
+  gameId: string;
   color: Color;
   athletes: Athlete[];
-  created_at: string;
+  createdAt: string;
 }
 
 export interface RosterDbWithJoin {
   id: string;
-  game: string;
+  gameId: string;
   color: Color;
-  athlete1: Athlete;
-  athlete2: Athlete;
-  athlete3: Athlete;
-  athlete4: Athlete;
-  athlete5: Athlete;
-  created_at: string;
+  athlete1Id: Athlete;
+  athlete2Id: Athlete;
+  athlete3Id: Athlete;
+  athlete4Id: Athlete;
+  athlete5Id: Athlete;
+  createdAt: string;
 }
