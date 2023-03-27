@@ -1,5 +1,5 @@
 import { formatDate } from "@/formatters/date_formatter";
-import { GetServerSidePropsContext } from "next";
+import { GetServerSidePropsContext, GetStaticPaths, GetStaticProps } from "next";
 import { Button } from "@/components/button";
 import Link from "next/link";
 import { Header } from "@/components/header";
@@ -17,7 +17,7 @@ export default function Home() {
   const gameResultsQuery = trpc.game.gameResults.findAllByGameId.useQuery(gameIdNumber);
 
   if (!gameQuery.data || !gameResultsQuery.data) {
-    throw "Data not prefetched from SSG";
+    throw new Error("Data was not prefetched during SSG");
   }
 
   return (
@@ -41,8 +41,8 @@ export default function Home() {
   );
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const gameId = validateRouterQueryToNumber(context.query.gameId);
+export const getStaticProps: GetStaticProps = async (context) => {
+  const gameId = validateRouterQueryToNumber(context.params?.gameId);
 
   await Promise.all([ssg.game.findById.prefetch(gameId), ssg.game.gameResults.findAllByGameId.prefetch(gameId)]);
 
@@ -51,4 +51,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       trpcState: ssg.dehydrate(),
     },
   };
-}
+};
+
+export const getStaticPaths: GetStaticPaths = (context) => {
+  return { paths: [], fallback: "blocking" };
+};

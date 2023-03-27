@@ -1,5 +1,5 @@
 import { Color, colorLabelsMap, colors } from "@/models/color";
-import { GameResult } from "@/models/game_result";
+import { GameResult } from "@prisma/client";
 
 interface Standings {
   color: Color;
@@ -17,30 +17,20 @@ interface Standings {
 export const Standings: React.FC<{ results: GameResult[] }> = ({ results }) => {
   const calculateValues = (results: GameResult[], color: Color): Standings => {
     const victories = results.filter(
-      (i) =>
-        (i.color1 === color && i.goals1 > i.goals2) ||
-        (i.color2 === color && i.goals2 > i.goals1)
+      (i) => (i.color1 === color && i.goals1 > i.goals2) || (i.color2 === color && i.goals2 > i.goals1)
     ).length;
 
-    const draws = results.filter(
-      (i) => (i.color1 === color || i.color2 === color) && i.goals1 === i.goals2
-    ).length;
+    const draws = results.filter((i) => (i.color1 === color || i.color2 === color) && i.goals1 === i.goals2).length;
 
     const losses = results.filter(
-      (i) =>
-        (i.color1 === color && i.goals1 < i.goals2) ||
-        (i.color2 === color && i.goals2 < i.goals1)
+      (i) => (i.color1 === color && i.goals1 < i.goals2) || (i.color2 === color && i.goals2 < i.goals1)
     ).length;
 
     const goalsScored = results
-      .map((i) =>
-        i.color1 === color ? i.goals1 : i.color2 === color ? i.goals2 : 0
-      )
+      .map((i) => (i.color1 === color ? i.goals1 : i.color2 === color ? i.goals2 : 0))
       .reduce((prev, cur) => prev + cur);
     const goalsAgainst = results
-      .map((i) =>
-        i.color1 === color ? i.goals2 : i.color2 === color ? i.goals1 : 0
-      )
+      .map((i) => (i.color1 === color ? i.goals2 : i.color2 === color ? i.goals1 : 0))
       .reduce((prev, cur) => prev + cur);
 
     const games = victories + draws + losses;
@@ -62,12 +52,7 @@ export const Standings: React.FC<{ results: GameResult[] }> = ({ results }) => {
 
   const formattedStandings = colors
     .map((color) => calculateValues(results, color.id))
-    .sort(
-      (a, b) =>
-        b.points - a.points ||
-        b.goalsDifference - a.goalsDifference ||
-        b.goalsScored - a.goalsScored
-    );
+    .sort((a, b) => b.points - a.points || b.goalsDifference - a.goalsDifference || b.goalsScored - a.goalsScored);
 
   return (
     <div className="mx-auto max-w-full">
@@ -102,33 +87,15 @@ export const Standings: React.FC<{ results: GameResult[] }> = ({ results }) => {
                 <span className="mr-4">{idx + 1}</span>
                 <span>{colorLabelsMap[standing.color]}</span>
               </td>
-              <td className="px-3 py-3 even:bg-neutral-800">
-                {standing.points}
-              </td>
-              <td className="px-3 py-3 even:bg-neutral-800">
-                {standing.games}
-              </td>
-              <td className="px-3 py-3 even:bg-neutral-800">
-                {standing.victories}
-              </td>
-              <td className="px-3 py-3 even:bg-neutral-800">
-                {standing.draws}
-              </td>
-              <td className="px-3 py-3 even:bg-neutral-800">
-                {standing.losses}
-              </td>
-              <td className="px-3 py-3 even:bg-neutral-800">
-                {standing.goalsScored}
-              </td>
-              <td className="px-3 py-3 even:bg-neutral-800">
-                {standing.goalsAgainst}
-              </td>
-              <td className="px-3 py-3 even:bg-neutral-800">
-                {standing.goalsDifference}
-              </td>
-              <td className="px-3 py-3 even:bg-neutral-800">
-                {(standing.percentage * 100).toFixed(0) + "%"}
-              </td>
+              <td className="px-3 py-3 even:bg-neutral-800">{standing.points}</td>
+              <td className="px-3 py-3 even:bg-neutral-800">{standing.games}</td>
+              <td className="px-3 py-3 even:bg-neutral-800">{standing.victories}</td>
+              <td className="px-3 py-3 even:bg-neutral-800">{standing.draws}</td>
+              <td className="px-3 py-3 even:bg-neutral-800">{standing.losses}</td>
+              <td className="px-3 py-3 even:bg-neutral-800">{standing.goalsScored}</td>
+              <td className="px-3 py-3 even:bg-neutral-800">{standing.goalsAgainst}</td>
+              <td className="px-3 py-3 even:bg-neutral-800">{standing.goalsDifference}</td>
+              <td className="px-3 py-3 even:bg-neutral-800">{(standing.percentage * 100).toFixed(0) + "%"}</td>
             </tr>
           ))}
         </tbody>

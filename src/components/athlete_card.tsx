@@ -1,7 +1,7 @@
 import Image from "next/image";
-import { Athlete } from "@/models/athlete";
 import React, { useEffect, useState } from "react";
 import { Color } from "@/models/color";
+import { Athlete } from "@prisma/client";
 
 interface Props {
   athlete: Athlete;
@@ -10,9 +10,7 @@ interface Props {
 }
 
 export const AthleteCard: React.FC<Props> = (props) => {
-  const [imgSrc, setImgSrc] = useState(
-    require(`public/images/athlete_cards/white/fallback.png`)
-  );
+  const [imgSrc, setImgSrc] = useState(require(`public/images/athlete_cards/white/fallback.png`));
   const [isFallback, setIsFallback] = useState(false);
 
   const [isInitial, setIsInitial] = useState(true);
@@ -20,15 +18,11 @@ export const AthleteCard: React.FC<Props> = (props) => {
   const recalculateImgSrc = () => {
     setIsInitial(false);
     try {
-      setImgSrc(
-        require(`public/images/athlete_cards/${props.color}/${props.athlete.id}.png`)
-      );
+      setImgSrc(require(`public/images/athlete_cards/${props.color}/${props.athlete.id}.png`));
       setIsFallback(false);
     } catch (err) {
       setIsFallback(true);
-      setImgSrc(
-        require(`public/images/athlete_cards/${props.color}/fallback.png`)
-      );
+      setImgSrc(require(`public/images/athlete_cards/${props.color}/fallback.png`));
     }
   };
 
@@ -53,9 +47,7 @@ export const AthleteCard: React.FC<Props> = (props) => {
           }
         >
           <Image src={imgSrc} alt="Card do atleta"></Image>
-          {isFallback && (
-            <FallbackName name={props.athlete.name} color={props.color} />
-          )}
+          {isFallback && <FallbackName name={props.athlete.name} color={props.color} />}
         </div>
       );
     case 1:
@@ -69,9 +61,7 @@ export const AthleteCard: React.FC<Props> = (props) => {
           }
         >
           <Image src={imgSrc} alt="Card do atleta"></Image>
-          {isFallback && (
-            <FallbackName name={props.athlete.name} color={props.color} />
-          )}
+          {isFallback && <FallbackName name={props.athlete.name} color={props.color} />}
         </div>
       );
     case 2:
@@ -86,9 +76,7 @@ export const AthleteCard: React.FC<Props> = (props) => {
           }
         >
           <Image src={imgSrc} alt="Card do atleta"></Image>
-          {isFallback && (
-            <FallbackName name={props.athlete.name} color={props.color} />
-          )}
+          {isFallback && <FallbackName name={props.athlete.name} color={props.color} />}
         </div>
       );
 
@@ -104,9 +92,7 @@ export const AthleteCard: React.FC<Props> = (props) => {
           }
         >
           <Image src={imgSrc} alt="Card do atleta"></Image>
-          {isFallback && (
-            <FallbackName name={props.athlete.name} color={props.color} />
-          )}
+          {isFallback && <FallbackName name={props.athlete.name} color={props.color} />}
         </div>
       );
 
@@ -122,30 +108,19 @@ export const AthleteCard: React.FC<Props> = (props) => {
           }
         >
           <Image src={imgSrc} alt="Card do atleta"></Image>
-          {isFallback && (
-            <FallbackName name={props.athlete.name} color={props.color} />
-          )}
+          {isFallback && <FallbackName name={props.athlete.name} color={props.color} />}
         </div>
       );
   }
   return <></>;
 };
 
-const FallbackName: React.FC<{ name: string; color: Color }> = ({
-  name,
-  color,
-}) => {
+const FallbackName: React.FC<{ name: string; color: Color }> = ({ name, color }) => {
   return (
     <div
       className={
         `absolute top-[56%] mx-auto w-full px-[10%] text-center font-bold uppercase transition-all duration-500 xl:text-xl ` +
-        `${
-          color === "white"
-            ? "text-whiteCardText"
-            : color === "yellow"
-            ? "text-yellowCardText"
-            : "text-white"
-        }`
+        `${color === "white" ? "text-whiteCardText" : color === "yellow" ? "text-yellowCardText" : "text-white"}`
       }
     >
       {name}

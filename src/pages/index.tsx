@@ -4,12 +4,12 @@ import { Button } from "@/components/button";
 import { Header } from "@/components/header";
 import { PageHead } from "@/components/page_head";
 import { trpc } from "@/utils/trpc";
-import { GetServerSidePropsContext } from "next";
 import { ssg } from "@/server/utils/ssg_helper";
+import { GetStaticProps } from "next";
 
 export default function Home() {
   const allGamesQuery = trpc.game.findAll.useQuery();
-  const sortedGames = [...(allGamesQuery.data ?? [])].sort((a, b) => b.gameDate.localeCompare(a.gameDate));
+  const sortedGames = [...(allGamesQuery.data ?? [])].sort((a, b) => b.gameDate.getTime() - a.gameDate.getTime());
   return (
     <>
       <PageHead description="Confira a escalação do maior time do sul do mundo!" />
@@ -28,7 +28,7 @@ export default function Home() {
   );
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+export const getStaticProps: GetStaticProps = async () => {
   await ssg.game.findAll.prefetch();
 
   return {
@@ -36,4 +36,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       trpcState: ssg.dehydrate(),
     },
   };
-}
+};

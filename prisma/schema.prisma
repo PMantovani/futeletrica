@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Athlete {
+  id                                BigInt   @id @default(autoincrement())
+  name                              String
+  rating                            Float?
+  createdAt                         DateTime @default(now()) @db.Timestamptz(6)
+  position                          Position
+  Roster_Roster_athlete1IdToAthlete Roster[] @relation("Roster_athlete1IdToAthlete")
+  Roster_Roster_athlete2IdToAthlete Roster[] @relation("Roster_athlete2IdToAthlete")
+  Roster_Roster_athlete3IdToAthlete Roster[] @relation("Roster_athlete3IdToAthlete")
+  Roster_Roster_athlete4IdToAthlete Roster[] @relation("Roster_athlete4IdToAthlete")
+  Roster_Roster_athlete5IdToAthlete Roster[] @relation("Roster_athlete5IdToAthlete")
+}
+
+model Game {
+  id         BigInt       @id @default(autoincrement())
+  gameDate   DateTime     @db.Timestamptz(6)
+  createdAt  DateTime?    @default(now()) @db.Timestamptz(6)
+  GameResult GameResult[]
+  Roster     Roster[]
+}
+
+model GameResult {
+  id        BigInt   @id(map: "GameResults_pkey") @default(autoincrement())
+  gameId    BigInt
+  color1    Color
+  color2    Color
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  goals1    Int      @db.SmallInt
+  goals2    Int      @db.SmallInt
+  match     Int      @db.SmallInt
+  Game      Game     @relation(fields: [gameId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Roster {
+  id                                 BigInt    @id(map: "Rooster_pkey") @default(autoincrement())
+  gameId                             BigInt?
+  color                              Color
+  athlete1Id                         BigInt?
+  athlete2Id                         BigInt?
+  athlete3Id                         BigInt?
+  athlete4Id                         BigInt?
+  athlete5Id                         BigInt?
+  createdAt                          DateTime? @default(now()) @db.Timestamptz(6)
+  Athlete_Roster_athlete1IdToAthlete Athlete?  @relation("Roster_athlete1IdToAthlete", fields: [athlete1Id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Athlete_Roster_athlete2IdToAthlete Athlete?  @relation("Roster_athlete2IdToAthlete", fields: [athlete2Id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Athlete_Roster_athlete3IdToAthlete Athlete?  @relation("Roster_athlete3IdToAthlete", fields: [athlete3Id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Athlete_Roster_athlete4IdToAthlete Athlete?  @relation("Roster_athlete4IdToAthlete", fields: [athlete4Id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Athlete_Roster_athlete5IdToAthlete Athlete?  @relation("Roster_athlete5IdToAthlete", fields: [athlete5Id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Game                               Game?     @relation(fields: [gameId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+enum Color {
+  white
+  yellow
+  blue
+}
+
+enum Position {
+  ZAG
+  MEI
+  ATA
+}

@@ -1,6 +1,6 @@
-import { GetServerSidePropsContext } from "next";
+import { GetServerSideProps } from "next";
 import { Header } from "@/components/header";
-import { convertGameResultInput, GameResult, GameResultInput } from "@/models/game_result";
+import { convertGameResultInput, GameResultInput } from "@/models/game_result";
 import { Main } from "@/components/main";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Color, colorLabelsMap } from "@/models/color";
@@ -9,6 +9,7 @@ import { ssg } from "@/server/utils/ssg_helper";
 import { validateRouterQueryToNumber } from "@/utils/validate_router_query";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
+import { GameResult } from "@prisma/client";
 
 export default function Home() {
   const router = useRouter();
@@ -21,7 +22,7 @@ export default function Home() {
   const updateResultsMutation = trpc.game.gameResults.updateResults.useMutation();
 
   if (!gameQuery.data || !gameResultsQuery.data) {
-    throw "Data not prefetched from SSG";
+    throw new Error("Data not prefetched from SSG");
   }
 
   const [results, setResults] = useState<GameResultInput[]>([]);
@@ -31,6 +32,11 @@ export default function Home() {
     if (!isNewResult) {
       setResults(gameResultsQuery.data);
     } else {
+      if (gameQuery.data === null) {
+        throw new Error("No such game");
+      }
+      const gameId = gameQuery.data.id;
+
       setResults([
         {
           color1: "yellow",
@@ -38,7 +44,7 @@ export default function Home() {
           goals1: 0,
           goals2: 0,
           match: 0,
-          game: gameQuery.data.id,
+          gameId,
         },
         {
           color1: "yellow",
@@ -46,7 +52,7 @@ export default function Home() {
           goals1: 0,
           goals2: 0,
           match: 1,
-          game: gameQuery.data.id,
+          gameId,
         },
         {
           color1: "white",
@@ -54,7 +60,7 @@ export default function Home() {
           goals1: 0,
           goals2: 0,
           match: 2,
-          game: gameQuery.data.id,
+          gameId,
         },
         {
           color1: "white",
@@ -62,7 +68,7 @@ export default function Home() {
           goals1: 0,
           goals2: 0,
           match: 3,
-          game: gameQuery.data.id,
+          gameId,
         },
         {
           color1: "blue",
@@ -70,7 +76,7 @@ export default function Home() {
           goals1: 0,
           goals2: 0,
           match: 4,
-          game: gameQuery.data.id,
+          gameId,
         },
         {
           color1: "blue",
@@ -78,7 +84,7 @@ export default function Home() {
           goals1: 0,
           goals2: 0,
           match: 5,
-          game: gameQuery.data.id,
+          gameId,
         },
         {
           color1: "yellow",
@@ -86,7 +92,7 @@ export default function Home() {
           goals1: 0,
           goals2: 0,
           match: 6,
-          game: gameQuery.data.id,
+          gameId,
         },
         {
           color1: "yellow",
@@ -94,7 +100,7 @@ export default function Home() {
           goals1: 0,
           goals2: 0,
           match: 7,
-          game: gameQuery.data.id,
+          gameId,
         },
         {
           color1: "white",
@@ -102,7 +108,7 @@ export default function Home() {
           goals1: 0,
           goals2: 0,
           match: 8,
-          game: gameQuery.data.id,
+          gameId,
         },
       ]);
     }
@@ -179,7 +185,7 @@ const Team: React.FC<{ color: Color }> = ({ color }) => (
   </div>
 );
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const gameId = validateRouterQueryToNumber(context.query.gameId);
   await Promise.all([ssg.game.findById.prefetch(gameId), ssg.game.gameResults.findAllByGameId.prefetch(gameId)]);
 
@@ -188,4 +194,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       trpcState: ssg.dehydrate(),
     },
   };
-}
+};

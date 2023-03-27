@@ -1,6 +1,6 @@
 import { Pill } from "@/components/pill";
 import { useState } from "react";
-import { GetServerSidePropsContext } from "next";
+import { GetStaticProps } from "next";
 import { Header } from "@/components/header";
 import { Main } from "@/components/main";
 import { Results } from "@/components/results";
@@ -19,12 +19,12 @@ export default function Home() {
   const gameQuery = trpc.game.findById.useQuery(gameIdNumber);
   const gameResultsQuery = trpc.game.gameResults.findAllByGameId.useQuery(gameIdNumber);
 
-  if (!gameQuery.data || !gameResultsQuery.data) {
-    throw "Data not prefetched from SSG";
-  }
-
   const [mode, setMode] = useState<"results" | "standings">("results");
-  const sortedResults = [...gameResultsQuery.data].sort((a, b) => a.match - b.match);
+  const sortedResults = [...(gameResultsQuery.data ?? [])].sort((a, b) => a.match - b.match);
+
+  if (!gameQuery.data || !gameResultsQuery.data) {
+    throw new Error("Data was not prefetched during SSG");
+  }
 
   return (
     <>
@@ -45,8 +45,8 @@ export default function Home() {
   );
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const gameId = validateRouterQueryToNumber(context.query.gameId);
+export const getServerSideProps: GetStaticProps = async (context) => {
+  const gameId = validateRouterQueryToNumber(context.params?.gameId);
 
   await Promise.all([ssg.game.findById.prefetch(gameId), ssg.game.gameResults.findAllByGameId.prefetch(gameId)]);
 
@@ -55,4 +55,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       trpcState: ssg.dehydrate(),
     },
   };
-}
+};

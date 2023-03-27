@@ -4,6 +4,16 @@ const nextConfig = {
   images: {
     domains: ["localhost"],
   },
+  experimental: {
+    swcPlugins: [
+      [
+        "next-superjson-plugin",
+        {
+          excluded: [],
+        },
+      ],
+    ],
+  },
 };
 
 module.exports = nextConfig;

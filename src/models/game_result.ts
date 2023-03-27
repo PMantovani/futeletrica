@@ -1,27 +1,25 @@
+import { GameResult } from "@prisma/client";
 import { z } from "zod";
 import { colorSchema } from "./color";
 
 export const gameResultSchema = z.object({
-  id: z.number(),
-  gameId: z.number(),
+  id: z.bigint(),
+  gameId: z.bigint(),
   match: z.number(),
   color1: colorSchema,
   goals1: z.number(),
   color2: colorSchema,
   goals2: z.number(),
-  createdAt: z.string(),
+  createdAt: z.date(),
 });
 
-export const newGameResultSchema = gameResultSchema.omit({ id: true, created_at: true });
+export const newGameResultSchema = gameResultSchema.omit({ id: true, createdAt: true });
 
 type _NewGameResult = z.infer<typeof newGameResultSchema>;
 export interface NewGameResult extends _NewGameResult {}
 
-type _GameResult = z.infer<typeof gameResultSchema>;
-export interface GameResult extends _GameResult {}
-
 const gameResultInputSchema = gameResultSchema
-  .partial({ id: true, created_at: true })
+  .partial({ id: true, createdAt: true })
   .extend({ goals1: z.string().or(z.number()), goals2: z.string().or(z.number()) });
 
 type _GameResultInput = z.infer<typeof gameResultInputSchema>;

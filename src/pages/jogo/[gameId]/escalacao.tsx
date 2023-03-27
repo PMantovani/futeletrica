@@ -2,7 +2,7 @@ import { AthleteCard } from "@/components/athlete_card";
 import { ColorObj, colors } from "@/models/color";
 import { Pill } from "@/components/pill";
 import { useState } from "react";
-import { GetServerSidePropsContext } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, GetStaticPaths, GetStaticProps } from "next";
 import { Header } from "@/components/header";
 import { formatDate } from "@/formatters/date_formatter";
 import { PageHead } from "@/components/page_head";
@@ -18,17 +18,17 @@ export default function Home() {
   const gameQuery = trpc.game.findById.useQuery(gameIdNumber);
   const rosterQuery = trpc.game.roster.findAllByGameId.useQuery(gameIdNumber);
 
-  if (!gameQuery.data || !rosterQuery.data) {
-    throw "Data not prefetched from SSG";
-  }
-
   const [selectedColor, setSelectedColor] = useState(colors[0] as ColorObj);
 
-  const athletes = rosterQuery.data.find((i) => i.color === selectedColor.id)?.athletes;
+  const athletes = rosterQuery.data?.find((i) => i.color === selectedColor.id)?.athletes;
   athletes?.sort((a, b) => b.position.localeCompare(a.position) || a.name.localeCompare(b.name));
 
   const calculateRosterAvg = () =>
-    ((athletes?.reduce((prev, cur) => prev + cur.rating, 0) ?? 0) / (athletes?.length ?? 1)).toFixed(3);
+    ((athletes?.reduce((prev, cur) => prev + (cur.rating ?? 0), 0) ?? 0) / (athletes?.length ?? 1)).toFixed(3);
+
+  if (!gameQuery.data || !rosterQuery.data) {
+    throw new Error("Data was not prefetched during SSG");
+  }
 
   return (
     <>
@@ -58,8 +58,8 @@ export default function Home() {
   );
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const gameId = validateRouterQueryToNumber(context.query.gameId);
+export const getStaticProps: GetStaticProps = async (context) => {
+  const gameId = validateRouterQueryToNumber(context.params?.gameId);
 
   await Promise.all([ssg.game.findById.prefetch(gameId), ssg.game.roster.findAllByGameId.prefetch(gameId)]);
 
@@ -68,4 +68,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       trpcState: ssg.dehydrate(),
     },
   };
-}
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return { paths: [], fallback: "blocking" };
+};

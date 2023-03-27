@@ -1,36 +1,17 @@
-import { GameResult, NewGameResult } from "@/models/game_result";
-import { createSupabaseClient } from "../utils/supabase_client";
+import { NewGameResult } from "@/models/game_result";
+import { GameResult } from "@prisma/client";
+import { prisma } from "../utils/prisma_client";
 
 export const findGameResultsByGameId = async (gameId: number) => {
-  const supabase = createSupabaseClient();
-  const { data, error } = await supabase.from("GameResult").select().eq("gameId", gameId);
-
-  if (error) {
-    throw error;
-  }
-  return data as GameResult[];
+  return prisma.gameResult.findMany({ where: { gameId } });
 };
 
 export const createGameResults = async (gameResults: NewGameResult[]) => {
-  const supabase = createSupabaseClient();
-
-  for (const result of gameResults) {
-    const { data, error } = await supabase.from("GameResult").insert(result);
-
-    if (error) {
-      throw error;
-    }
-  }
+  await prisma.gameResult.createMany({ data: gameResults });
 };
 
 export const updateGameResults = async (gameResults: GameResult[]) => {
-  const supabase = createSupabaseClient();
-
   for (const result of gameResults) {
-    const { data, error } = await supabase.from("GameResult").update(result).eq("id", result.id);
-
-    if (error) {
-      throw error;
-    }
+    await prisma.gameResult.update({ data: result, where: { id: result.id } });
   }
 };
