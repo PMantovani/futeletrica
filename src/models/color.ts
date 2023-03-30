@@ -1,10 +1,10 @@
 import { z } from "zod";
 
-export const colors = [
+export const colors: { id: Color; label: string }[] = [
   { id: "white", label: "Branco" },
   { id: "blue", label: "Azul" },
   { id: "yellow", label: "Amarelo" },
-] as const;
+];
 
 export const colorLabelsMap = colors.reduce(
   (prev, cur) => ({ ...prev, [cur.id]: cur.label }),

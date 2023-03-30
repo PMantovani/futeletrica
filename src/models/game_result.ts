@@ -25,6 +25,14 @@ const gameResultInputSchema = gameResultSchema
 type _GameResultInput = z.infer<typeof gameResultInputSchema>;
 export interface GameResultInput extends _GameResultInput {}
 
+export const operateOnGameResultInputSchema = z.object({
+  create: newGameResultSchema.array(),
+  update: gameResultSchema.array(),
+  delete: gameResultSchema.array(),
+});
+
+export type OperateOnGameResultInput = z.infer<typeof operateOnGameResultInputSchema>;
+
 export function convertGameResultInput(input: GameResultInput): NewGameResult | GameResult {
   const goals1 = parseInt(input.goals1.toString());
   const goals2 = parseInt(input.goals2.toString());
