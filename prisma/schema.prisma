@@ -66,6 +66,7 @@ enum Color {
 
 enum Position {
   ZAG
+  VOL
   MEI
   ATA
 }
