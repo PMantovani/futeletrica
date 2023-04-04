@@ -3,7 +3,7 @@ import { GameResult } from "@prisma/client";
 import { prisma } from "../utils/prisma_client";
 
 export const findGameResultsByGameId = async (gameId: number) => {
-  return prisma.gameResult.findMany({ where: { gameId } });
+  return prisma.gameResult.findMany({ where: { gameId }, orderBy: { match: "asc" } });
 };
 
 export const createGameResults = async (gameResults: NewGameResult[]) => {
