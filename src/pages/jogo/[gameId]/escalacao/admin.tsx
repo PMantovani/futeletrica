@@ -5,7 +5,7 @@ import { IconButton } from "@/components/icon_button";
 import { Main } from "@/components/main";
 import { formatDate } from "@/formatters/date_formatter";
 import { trpc } from "@/utils/trpc";
-import { validateRouterQueryToNumber } from "@/utils/validate_router_query";
+import { routerQueryToNumberOrUndefined } from "@/utils/validate_router_query";
 import { Athlete } from "@prisma/client";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -15,10 +15,11 @@ import { MdClose } from "react-icons/md";
 
 const RosterAdmin: NextPage = () => {
   const router = useRouter();
-  const gameIdNumber = validateRouterQueryToNumber(router.query.gameId);
   const [selectedAthletes, setSelectedAthletes] = useState<Athlete[]>([]);
+  const gameIdNumber = routerQueryToNumberOrUndefined(router.query.gameId);
 
-  const { data: game } = trpc.game.findById.useQuery(gameIdNumber);
+  const { data: game } = trpc.game.findById.useQuery(gameIdNumber!, { enabled: !!gameIdNumber });
+
   const { data: allAthletesQueryData } = trpc.athlete.findAll.useQuery();
   const [availableAthletes, setAvailableAthletes] = useState(allAthletesQueryData ?? []);
   const generateRostersMutation = trpc.game.roster.generateRoster.useMutation({
@@ -35,7 +36,9 @@ const RosterAdmin: NextPage = () => {
   }
 
   const generateRosters = () => {
-    generateRostersMutation.mutate({ gameId: BigInt(gameIdNumber), athleteIds: selectedAthletes.map((i) => i.id) });
+    if (gameIdNumber) {
+      generateRostersMutation.mutate({ gameId: BigInt(gameIdNumber), athleteIds: selectedAthletes.map((i) => i.id) });
+    }
   };
 
   return (
