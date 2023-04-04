@@ -14,7 +14,9 @@ export const Autocomplete = <T,>(props: Props<T>) => {
   const input = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setOptions(props.filter(inputValue));
+    const filteredValues = props.filter(inputValue);
+    filteredValues.sort((a, b) => props.toLabel(a).localeCompare(props.toLabel(b)));
+    setOptions(filteredValues);
   }, [props.filter]);
 
   const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
