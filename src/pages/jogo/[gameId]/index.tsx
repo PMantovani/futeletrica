@@ -27,13 +27,14 @@ export default function Home() {
         <Header />
         <div className="flex flex-col items-center">
           <h2 className="mb-4 text-xl font-bold text-yellow">Jogo do dia {formatDate(gameQuery.data.gameDate)}</h2>
-          <Button>
-            <Link href={`/jogo/${gameQuery.data.id}/escalacao`}>Escalação</Link>
-          </Button>
+
+          <Link href={`/jogo/${gameQuery.data.id}/escalacao`}>
+            <Button>Escalação</Button>
+          </Link>
           {gameResultsQuery.data.length > 0 && (
-            <Button>
-              <Link href={`/jogo/${gameQuery.data.id}/resultados`}>Resultados</Link>
-            </Button>
+            <Link href={`/jogo/${gameQuery.data.id}/resultados`}>
+              <Button>Resultados</Button>
+            </Link>
           )}
         </div>
       </main>

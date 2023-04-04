@@ -18,9 +18,9 @@ export default function Home() {
         <div className="flex flex-col items-center">
           <h2 className="mb-4 text-xl font-bold text-yellow">Jogos do Fut Elétrica</h2>
           {sortedGames.map((game, idx) => (
-            <Button key={idx}>
-              <Link href={`/jogo/${game.id}`}>{"Jogo do dia " + formatDate(game.gameDate)}</Link>
-            </Button>
+            <Link href={`/jogo/${game.id}`}>
+              <Button key={idx}>{"Jogo do dia " + formatDate(game.gameDate)}</Button>
+            </Link>
           ))}
         </div>
       </main>
