@@ -4,7 +4,7 @@ import { GetStaticProps } from "next";
 import { Header } from "@/components/header";
 import { Main } from "@/components/main";
 import { Results } from "@/components/results";
-import { Standings } from "@/components/standings";
+import { StandingsComponent } from "@/components/standings";
 import { PageHead } from "@/components/page_head";
 import { formatDate } from "@/formatters/date_formatter";
 import { ssg } from "@/server/utils/ssg_helper";
@@ -39,7 +39,7 @@ export default function Home() {
             Classificação
           </Pill>
         </div>
-        {mode === "results" ? <Results results={sortedResults} /> : <Standings results={sortedResults} />}
+        {mode === "results" ? <Results results={sortedResults} /> : <StandingsComponent results={sortedResults} />}
       </Main>
     </>
   );

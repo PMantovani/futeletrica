@@ -1,58 +1,9 @@
-import { Color, colorLabelsMap, colors } from "@/models/color";
+import { colorLabelsMap } from "@/models/color";
+import { computeGameResultsIntoStandings } from "@/models/game_result";
 import { GameResult } from "@prisma/client";
 
-interface Standings {
-  color: Color;
-  points: number;
-  games: number;
-  victories: number;
-  draws: number;
-  losses: number;
-  goalsScored: number;
-  goalsAgainst: number;
-  goalsDifference: number;
-  percentage: number;
-}
-
-export const Standings: React.FC<{ results: GameResult[] }> = ({ results }) => {
-  const calculateValues = (results: GameResult[], color: Color): Standings => {
-    const victories = results.filter(
-      (i) => (i.color1 === color && i.goals1 > i.goals2) || (i.color2 === color && i.goals2 > i.goals1)
-    ).length;
-
-    const draws = results.filter((i) => (i.color1 === color || i.color2 === color) && i.goals1 === i.goals2).length;
-
-    const losses = results.filter(
-      (i) => (i.color1 === color && i.goals1 < i.goals2) || (i.color2 === color && i.goals2 < i.goals1)
-    ).length;
-
-    const goalsScored = results
-      .map((i) => (i.color1 === color ? i.goals1 : i.color2 === color ? i.goals2 : 0))
-      .reduce((prev, cur) => prev + cur);
-    const goalsAgainst = results
-      .map((i) => (i.color1 === color ? i.goals2 : i.color2 === color ? i.goals1 : 0))
-      .reduce((prev, cur) => prev + cur);
-
-    const games = victories + draws + losses;
-    const points = 3 * victories + draws;
-
-    return {
-      color,
-      games,
-      points,
-      victories,
-      draws,
-      losses,
-      goalsScored,
-      goalsAgainst,
-      goalsDifference: goalsScored - goalsAgainst,
-      percentage: points / (3 * games),
-    };
-  };
-
-  const formattedStandings = colors
-    .map((color) => calculateValues(results, color.id))
-    .sort((a, b) => b.points - a.points || b.goalsDifference - a.goalsDifference || b.goalsScored - a.goalsScored);
+export const StandingsComponent: React.FC<{ results: GameResult[] }> = ({ results }) => {
+  const formattedStandings = computeGameResultsIntoStandings(results);
 
   return (
     <div className="mx-auto max-w-full">

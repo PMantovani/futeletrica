@@ -28,6 +28,11 @@ export default function Home() {
     onError: () => toast.error("Erro ao salvar resultados"),
   });
 
+  const closeGameMutation = trpc.game.closeGame.useMutation({
+    onSuccess: () => toast.success("Resultados foram computados com sucesso"),
+    onError: () => toast.error("Erro ao computar resultados"),
+  });
+
   if (!gameQuery.data || !gameResultsQuery.data) {
     throw new Error("Data not prefetched from SSG");
   }
@@ -52,6 +57,7 @@ export default function Home() {
   const save = async () => {
     if (!isValid()) {
       toast.error("Valores inválidos.");
+      return false;
     } else {
       const recordsToCreate = results.filter((i) => !i.id);
       const recordsToUpdate = results.filter((i) => !!i.id);
@@ -62,8 +68,8 @@ export default function Home() {
         delete: recordsToDelete,
       });
 
-      gameResultsQuery.refetch();
-      return;
+      await gameResultsQuery.refetch();
+      return true;
     }
   };
 
@@ -135,6 +141,21 @@ export default function Home() {
     }
   };
 
+  const computeResults = async () => {
+    const hasConfirmed = window.confirm(
+      "Tem certeza que deseja computar todos os resultados? As notas de todos os jogadores serão atualizadas baseadas nestes resultados."
+    );
+    if (!hasConfirmed) {
+      return;
+    }
+
+    const hasSaved = await save();
+    if (!hasSaved) {
+      return;
+    }
+    await closeGameMutation.mutateAsync(gameIdNumber);
+  };
+
   return (
     <>
       <Main>
@@ -167,6 +188,7 @@ export default function Home() {
         <div className="mx-auto flex flex-col items-stretch">
           <Button onClick={onAddMatch}>Adicionar nova partida</Button>
           <Button onClick={save}>Salvar</Button>
+          <Button onClick={computeResults}>Computar resultados</Button>
         </div>
       </Main>
     </>
