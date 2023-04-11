@@ -7,37 +7,16 @@ export const findAllRostersByGameId = async (gameId: number) => {
   const result2 = await prisma.roster.findMany({
     where: { gameId },
     include: {
-      Athlete_Roster_athlete1IdToAthlete: true,
-      Athlete_Roster_athlete2IdToAthlete: true,
-      Athlete_Roster_athlete3IdToAthlete: true,
-      Athlete_Roster_athlete4IdToAthlete: true,
-      Athlete_Roster_athlete5IdToAthlete: true,
+      athletes: { include: { athlete: true } },
     },
   });
 
   return result2.map((i) => {
-    const athletes: Athlete[] = [];
-    if (i.Athlete_Roster_athlete1IdToAthlete) {
-      athletes.push(i.Athlete_Roster_athlete1IdToAthlete);
-    }
-    if (i.Athlete_Roster_athlete2IdToAthlete) {
-      athletes.push(i.Athlete_Roster_athlete2IdToAthlete);
-    }
-    if (i.Athlete_Roster_athlete3IdToAthlete) {
-      athletes.push(i.Athlete_Roster_athlete3IdToAthlete);
-    }
-    if (i.Athlete_Roster_athlete4IdToAthlete) {
-      athletes.push(i.Athlete_Roster_athlete4IdToAthlete);
-    }
-    if (i.Athlete_Roster_athlete5IdToAthlete) {
-      athletes.push(i.Athlete_Roster_athlete5IdToAthlete);
-    }
-
     return {
       id: i.id,
       gameId: i.gameId,
       color: i.color,
-      athletes: athletes,
+      athletes: i.athletes.map((j) => j.athlete),
       createdAt: i.createdAt,
     };
   });
@@ -74,7 +53,7 @@ export const generateRoster = async (athleteIds: bigint[], gameId: bigint) => {
     const meiWithColor = mei.map((i, idx) => ({ ...i, color: colors[(nextIdx + idx) % colors.length].id }));
     nextIdx = (ata.length + mei.length) % colors.length;
     const volWithColor = vol.map((i, idx) => ({ ...i, color: colors[(nextIdx + idx) % colors.length].id }));
-    nextIdx = (ata.length + vol.length) % colors.length;
+    nextIdx = (ata.length + mei.length + vol.length) % colors.length;
     const zagWithColor = zag.map((i, idx) => ({ ...i, color: colors[(nextIdx + idx) % colors.length].id }));
     const fullRoster = [...ataWithColor, ...meiWithColor, ...volWithColor, ...zagWithColor];
     const sumScore = (prev: number, cur: AthleteWithColor) => prev + (cur.rating ?? 6);
@@ -93,20 +72,17 @@ export const generateRoster = async (athleteIds: bigint[], gameId: bigint) => {
 };
 
 const storeBestRostersInDb = async (bestRosters: AthleteWithColor[], gameId: bigint) => {
-  const formattedRosters = colors.map((color) => {
-    const [athlete1, athlete2, athlete3, athlete4, athlete5] = bestRosters.filter((i) => i.color === color.id);
-    const roster: Prisma.RosterCreateManyInput = {
+  const formattedRosters: Prisma.RosterCreateInput[] = colors.map((color) => {
+    const athletes = bestRosters.filter((i) => i.color === color.id);
+    const roster: Prisma.RosterCreateInput = {
       color: color.id,
-      gameId,
-      athlete1Id: athlete1.id,
-      athlete2Id: athlete2.id,
-      athlete3Id: athlete3.id,
-      athlete4Id: athlete4.id,
-      athlete5Id: athlete5.id,
+      Game: { connect: { id: gameId } },
+      athletes: { createMany: { data: athletes.map((i) => ({ athleteId: i.id })) } },
     };
     return roster;
   });
-  await prisma.roster.createMany({ data: formattedRosters });
+
+  await prisma.$transaction(formattedRosters.map((roster) => prisma.roster.create({ data: roster })));
 };
 
 function shuffleArray<T>(array: T[]) {
