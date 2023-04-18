@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Athlete" ADD COLUMN     "initialRating" DOUBLE PRECISION NOT NULL DEFAULT 0;

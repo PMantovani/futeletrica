@@ -32,7 +32,7 @@ export const closeGame = async (gameId: number) => {
     updatedAthletes = [
       ...rosterToEarnPoints.map((i) => ({
         ...i,
-        rating: i.rating ? roundToDecimalPlaces(i.rating + ratingDeltaPerGame) : null,
+        rating: roundToDecimalPlaces(i.rating + ratingDeltaPerGame),
       })),
     ];
   }
@@ -41,7 +41,7 @@ export const closeGame = async (gameId: number) => {
       ...updatedAthletes,
       ...rosterToLosePoints.map((i) => ({
         ...i,
-        rating: i.rating ? roundToDecimalPlaces(i.rating - ratingDeltaPerGame) : null,
+        rating: roundToDecimalPlaces(i.rating - ratingDeltaPerGame),
       })),
     ];
   }

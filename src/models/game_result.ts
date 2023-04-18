@@ -87,10 +87,10 @@ export function computeGameResultsIntoStandings(gameResults: GameResult[]) {
 
     const goalsScored = results
       .map((i) => (i.color1 === color ? i.goals1 : i.color2 === color ? i.goals2 : 0))
-      .reduce((prev, cur) => prev + cur);
+      .reduce((prev, cur) => prev + cur, 0);
     const goalsAgainst = results
       .map((i) => (i.color1 === color ? i.goals2 : i.color2 === color ? i.goals1 : 0))
-      .reduce((prev, cur) => prev + cur);
+      .reduce((prev, cur) => prev + cur, 0);
 
     const games = victories + draws + losses;
     const points = 3 * victories + draws;

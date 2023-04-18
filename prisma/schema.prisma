@@ -8,12 +8,13 @@ datasource db {
 }
 
 model Athlete {
-  id                                BigInt   @id @default(autoincrement())
-  name                              String
-  rating                            Float?
-  createdAt                         DateTime @default(now()) @db.Timestamptz(6)
-  position                          Position
-  rosters AthletesOnRosters[]
+  id            BigInt              @id @default(autoincrement())
+  name          String
+  initialRating Float               @default(0)
+  rating        Float               @default(0)
+  createdAt     DateTime            @default(now()) @db.Timestamptz(6)
+  position      Position
+  rosters       AthletesOnRosters[]
 }
 
 model Game {
@@ -37,18 +38,18 @@ model GameResult {
 }
 
 model Roster {
-  id                                 BigInt    @id(map: "Rooster_pkey") @default(autoincrement())
-  gameId                             BigInt?
-  color                              Color
-  createdAt                          DateTime? @default(now()) @db.Timestamptz(6)
-  Game                               Game?     @relation(fields: [gameId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  athletes AthletesOnRosters[]
+  id        BigInt              @id(map: "Rooster_pkey") @default(autoincrement())
+  gameId    BigInt?
+  color     Color
+  createdAt DateTime?           @default(now()) @db.Timestamptz(6)
+  Game      Game?               @relation(fields: [gameId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  athletes  AthletesOnRosters[]
 }
 
 model AthletesOnRosters {
-  roster Roster @relation(fields: [rosterId], references: [id], onDelete: Cascade)
-  rosterId BigInt
-  athlete Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  roster    Roster  @relation(fields: [rosterId], references: [id], onDelete: Cascade)
+  rosterId  BigInt
+  athlete   Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
   athleteId BigInt
 
   @@id([rosterId, athleteId])

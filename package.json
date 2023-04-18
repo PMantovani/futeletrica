@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next dev",
+    "prod": "env-cmd -f .env.prod npm run build && npm run start",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -20,6 +21,7 @@
     "@types/node": "18.11.18",
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
+    "class-variance-authority": "^0.5.2",
     "eslint": "8.33.0",
     "eslint-config-next": "13.1.6",
     "luxon": "^3.3.0",
@@ -36,6 +38,7 @@
   "devDependencies": {
     "@types/luxon": "^3.2.0",
     "autoprefixer": "^10.4.13",
+    "env-cmd": "^10.1.0",
     "postcss": "^8.4.21",
     "prettier": "^2.8.3",
     "prettier-plugin-tailwindcss": "^0.2.2",
