@@ -24,6 +24,7 @@ export const getAthleteStandings = async () => {
 
   const result = elegibleAthletes.map((i) => {
     const lastGameResults = i.rosters
+      .filter((j) => (j.roster.Game?.GameResult.length ?? 0) > 0)
       .slice(-5)
       .map((j) => ({
         color: j.roster.color,
