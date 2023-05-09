@@ -34,8 +34,8 @@ export default function Atletas() {
         <div className="flex flex-col">
           <h2 className="mx-auto mb-4 text-xl font-bold text-yellow">Ranking de atletas</h2>
 
-          <div className="mx-auto overflow-x-auto">
-            <table>
+          <div className="overflow-x-auto">
+            <table className="mx-auto">
               <thead className="fill-neutral-500 text-center text-sm uppercase text-neutral-500">
                 <tr className="border-b-2 border-solid border-neutral-800">
                   <th className="px-3 py-3 even:bg-neutral-800">Atleta</th>
