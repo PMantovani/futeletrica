@@ -34,13 +34,14 @@ export default function Atletas() {
         <div className="flex flex-col">
           <h2 className="mx-auto mb-4 text-xl font-bold text-yellow">Ranking de atletas</h2>
 
-          <div className="overflow-x-auto">
+          <div className="mx-auto overflow-x-auto">
             <table>
               <thead className="fill-neutral-500 text-center text-sm uppercase text-neutral-500">
                 <tr className="border-b-2 border-solid border-neutral-800">
                   <th className="px-3 py-3 even:bg-neutral-800">Atleta</th>
+                  <th className="px-3 py-3 even:bg-neutral-800">Pos.</th>
                   <HeaderWithSort
-                    className="bg-neutral-800 px-3 py-3"
+                    className="px-3 py-3 even:bg-neutral-800"
                     onClick={() => setSortBy("overall")}
                     showArrow={sortBy === "overall"}
                   >
@@ -49,7 +50,7 @@ export default function Atletas() {
                   </HeaderWithSort>
 
                   <HeaderWithSort
-                    className="px-3 py-3"
+                    className="px-3 py-3 even:bg-neutral-800"
                     onClick={() => setSortBy("change")}
                     showArrow={sortBy === "change"}
                   >
@@ -74,6 +75,7 @@ export default function Atletas() {
                         <span className="mr-4">{idx + 1}</span>
                         <span>{athlete.name}</span>
                       </Cell>
+                      <Cell intent={intent}>{athlete.position}</Cell>
                       <Cell intent={intent}>{athlete.rating.toFixed(2)}</Cell>
                       <Cell intent={intent}>
                         <SeasonChangeCell intent={seasonChangeResult} value={athlete.seasonChange} />

@@ -36,6 +36,7 @@ export const getAthleteStandings = async () => {
       athleteId: i.id,
       name: i.name,
       rating: i.rating,
+      position: i.position,
       seasonChange: parseFloat((i.rating - i.initialRating).toFixed(2)),
       lastGames: lastGameResults,
     };
