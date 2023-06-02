@@ -2,7 +2,7 @@ import { AthleteCard } from "@/components/athlete_card";
 import { ColorObj, colors } from "@/models/color";
 import { Pill } from "@/components/pill";
 import { useState } from "react";
-import { GetServerSideProps, GetServerSidePropsContext, GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { Header } from "@/components/header";
 import { formatDate } from "@/formatters/date_formatter";
 import { PageHead } from "@/components/page_head";

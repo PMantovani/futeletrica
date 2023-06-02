@@ -1,34 +1,21 @@
 import { Pill } from "@/components/pill";
 import { useState } from "react";
-import { GetStaticProps } from "next";
 import { Header } from "@/components/header";
 import { Main } from "@/components/main";
 import { Results } from "@/components/results";
 import { StandingsComponent } from "@/components/standings";
 import { PageHead } from "@/components/page_head";
-import { formatDate } from "@/formatters/date_formatter";
-import { ssg } from "@/server/utils/ssg_helper";
-import { useRouter } from "next/router";
-import { trpc } from "@/utils/trpc";
-import { validateRouterQueryToNumber } from "@/utils/validate_router_query";
+import { useGameAndResultsFromQueryParam } from "@/hooks/use-game-and-results";
 
 export default function Home() {
-  const router = useRouter();
-  const gameIdNumber = validateRouterQueryToNumber(router.query.gameId);
-
-  const gameQuery = trpc.game.findById.useQuery(gameIdNumber);
-  const gameResultsQuery = trpc.game.gameResults.findAllByGameId.useQuery(gameIdNumber);
+  const { gameResultsQuery, gameIdNumber } = useGameAndResultsFromQueryParam();
 
   const [mode, setMode] = useState<"results" | "standings">("results");
   const sortedResults = [...(gameResultsQuery.data ?? [])].sort((a, b) => a.match - b.match);
 
-  if (!gameQuery.data || !gameResultsQuery.data) {
-    throw new Error("Data was not prefetched during SSG");
-  }
-
   return (
     <>
-      <PageHead description={`Confira os resultados do jogo do dia ${formatDate(gameQuery.data.gameDate)}`} />
+      <PageHead description={`Confira os resultados do jogo ${gameIdNumber}`} />
       <Main>
         <Header />
         <div className="mx-auto flex pb-6">
@@ -39,20 +26,9 @@ export default function Home() {
             Classificação
           </Pill>
         </div>
+        {gameResultsQuery.isLoading && <div className="mx-auto">Carregando...</div>}
         {mode === "results" ? <Results results={sortedResults} /> : <StandingsComponent results={sortedResults} />}
       </Main>
     </>
   );
 }
-
-export const getServerSideProps: GetStaticProps = async (context) => {
-  const gameId = validateRouterQueryToNumber(context.params?.gameId);
-
-  await Promise.all([ssg.game.findById.prefetch(gameId), ssg.game.gameResults.findAllByGameId.prefetch(gameId)]);
-
-  return {
-    props: {
-      trpcState: ssg.dehydrate(),
-    },
-  };
-};
