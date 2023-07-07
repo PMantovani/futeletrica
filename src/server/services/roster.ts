@@ -25,11 +25,6 @@ export const findAllRostersByGameId = async (gameId: number) => {
 type AthleteWithColor = Athlete & { color: Color };
 
 export const generateRoster = async (athleteIds: bigint[], gameId: bigint) => {
-  const rosterAlreadyExists = await prisma.roster.findFirst({ where: { gameId } });
-  if (!!rosterAlreadyExists) {
-    throw new TRPCError({ code: "CONFLICT", message: "Roster already generated for this game" });
-  }
-
   const selectedAthletes = await prisma.athlete.findMany({ where: { id: { in: athleteIds } } });
   const ata = selectedAthletes.filter((i) => i.position === "ATA");
   const mei = selectedAthletes.filter((i) => i.position === "MEI");
@@ -82,7 +77,10 @@ const storeBestRostersInDb = async (bestRosters: AthleteWithColor[], gameId: big
     return roster;
   });
 
-  await prisma.$transaction(formattedRosters.map((roster) => prisma.roster.create({ data: roster })));
+  const deleteExistingOperation = prisma.roster.deleteMany({ where: { gameId } });
+  const createNewOperations = formattedRosters.map((roster) => prisma.roster.create({ data: roster }));
+
+  await prisma.$transaction([deleteExistingOperation, ...createNewOperations]);
 };
 
 function shuffleArray<T>(array: T[]) {
