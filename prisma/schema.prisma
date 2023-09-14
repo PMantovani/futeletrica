@@ -16,6 +16,7 @@ model Athlete {
   createdAt     DateTime            @default(now()) @db.Timestamptz(6)
   position      Position
   rosters       AthletesOnRosters[]
+  isActive      Boolean             @default(true)
 }
 
 model Game {

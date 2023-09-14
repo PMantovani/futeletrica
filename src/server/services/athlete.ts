@@ -17,7 +17,7 @@ export const getAthleteStandings = async () => {
     include: { rosters: { include: { roster: { include: { Game: { include: { GameResult: true } } } } } } },
   });
 
-  const elegibleAthletes = athletes.filter((i) => i.rosters.length >= 3);
+  const elegibleAthletes = athletes.filter((i) => i.rosters.length > 3 && i.isActive === true);
   elegibleAthletes.forEach((i) =>
     i.rosters.sort((a, b) => a.roster.Game?.gameDate.getTime() ?? 0 - (b.roster.Game?.gameDate.getTime() ?? 0))
   );
