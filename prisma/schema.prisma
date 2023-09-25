@@ -23,6 +23,7 @@ model Game {
   id         BigInt       @id @default(autoincrement())
   gameDate   DateTime     @db.Timestamptz(6)
   createdAt  DateTime?    @default(now()) @db.Timestamptz(6)
+  computed   Boolean      @default(false)
   GameResult GameResult[]
   Roster     Roster[]
 }

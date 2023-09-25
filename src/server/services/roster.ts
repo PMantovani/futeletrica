@@ -1,6 +1,5 @@
 import { Color, colors } from "@/models/color";
 import { Athlete, Prisma } from "@prisma/client";
-import { TRPCError } from "@trpc/server";
 import { prisma } from "../utils/prisma_client";
 
 export const findAllRostersByGameId = async (gameId: number) => {
