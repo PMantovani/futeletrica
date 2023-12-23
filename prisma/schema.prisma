@@ -17,6 +17,7 @@ model Athlete {
   position      Position
   rosters       AthletesOnRosters[]
   isActive      Boolean             @default(true)
+  SeasonRating  SeasonRating[]
 }
 
 model Game {
@@ -61,12 +62,23 @@ model AthletesOnRosters {
 }
 
 model Season {
-  id        BigInt   @id @default(autoincrement())
-  name      String
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
-  startsAt  DateTime @db.Timestamptz(6)
-  endsAt    DateTime @db.Timestamptz(6)
-  games     Game[]
+  id           BigInt         @id @default(autoincrement())
+  name         String
+  createdAt    DateTime       @default(now()) @db.Timestamptz(6)
+  startsAt     DateTime       @db.Timestamptz(6)
+  endsAt       DateTime       @db.Timestamptz(6)
+  games        Game[]
+  SeasonRating SeasonRating[]
+}
+
+model SeasonRating {
+  id          BigInt  @id @default(autoincrement())
+  seasonId    BigInt
+  athleteId   BigInt
+  startRating Float
+  endRating   Float
+  Season      Season  @relation(fields: [seasonId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Athlete     Athlete @relation(fields: [athleteId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum Color {
