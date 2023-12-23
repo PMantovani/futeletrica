@@ -5,6 +5,7 @@ const nextConfig = {
     domains: ["localhost"],
   },
   experimental: {
+    forceSwcTransforms: true,
     swcPlugins: [
       [
         "next-superjson-plugin",
