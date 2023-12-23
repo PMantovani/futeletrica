@@ -21,13 +21,13 @@ model Athlete {
 
 model Game {
   id         BigInt       @id @default(autoincrement())
-  // seasonId   BigInt       @default(1)
+  seasonId   BigInt       @default(1)
   gameDate   DateTime     @db.Timestamptz(6)
   createdAt  DateTime?    @default(now()) @db.Timestamptz(6)
   computed   Boolean      @default(false)
   GameResult GameResult[]
   Roster     Roster[]
-  // Season     Season?      @relation(fields: [seasonId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Season     Season?      @relation(fields: [seasonId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model GameResult {
@@ -66,7 +66,7 @@ model Season {
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   startsAt  DateTime @db.Timestamptz(6)
   endsAt    DateTime @db.Timestamptz(6)
-  // games     Game[]
+  games     Game[]
 }
 
 enum Color {
