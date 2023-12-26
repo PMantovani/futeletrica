@@ -34,7 +34,7 @@ export const closeGame = async (gameId: number) => {
     const rosters = await findAllRostersByGameId(gameId);
 
     let updatedAthletes: Athlete[] = [];
-    if (new Date().getFullYear() >= 2024) {
+    if (game.gameDate.getFullYear() >= 2024) {
       updatedAthletes = calculateNewRatings(standings, rosters);
     } else {
       updatedAthletes = calculateOldRatings(standings, rosters);
@@ -44,7 +44,29 @@ export const closeGame = async (gameId: number) => {
       updatedAthletes.map((athlete) => transaction.athlete.update({ data: athlete, where: { id: athlete.id } }))
     );
 
-    transaction.game.update({ data: { computed: true }, where: { id: gameId } });
+    await Promise.all(
+      updatedAthletes.map((athlete) =>
+        transaction.seasonRating.upsert({
+          where: { seasonId_athleteId: { athleteId: athlete.id, seasonId: BigInt(game.seasonId) } },
+          create: {
+            startRating:
+              rosters
+                .map((i) => i.athletes)
+                .flat()
+                .find((i) => i.id === athlete.id)?.rating ?? athlete.rating,
+            endRating: athlete.rating,
+            athleteId: athlete.id,
+            seasonId: BigInt(game.seasonId),
+          },
+          update: {
+            endRating: athlete.rating,
+          },
+        })
+      )
+    );
+
+    await transaction.game.update({ data: { computed: true }, where: { id: gameId } });
+    return;
   });
 };
 

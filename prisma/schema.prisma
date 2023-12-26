@@ -79,6 +79,8 @@ model SeasonRating {
   endRating   Float
   Season      Season  @relation(fields: [seasonId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Athlete     Athlete @relation(fields: [athleteId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([seasonId, athleteId])
 }
 
 enum Color {

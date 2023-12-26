@@ -5,12 +5,18 @@ export const findAllAthletes = () => {
   return prisma.athlete.findMany();
 };
 
-export const getAthleteStandings = async () => {
+export const getAthleteStandings = async (seasonId: number) => {
   const athletes = await prisma.athlete.findMany({
-    include: { rosters: { include: { roster: { include: { Game: { include: { GameResult: true } } } } } } },
+    include: {
+      SeasonRating: true,
+      rosters: {
+        include: { roster: { include: { Game: { include: { GameResult: true } } } } },
+        where: { roster: { Game: { seasonId } } },
+      },
+    },
   });
 
-  const elegibleAthletes = athletes.filter((i) => i.rosters.length > 3 && i.isActive === true);
+  const elegibleAthletes = athletes.filter((i) => i.rosters.length > 0 && i.isActive === true);
   elegibleAthletes.forEach((i) =>
     i.rosters.sort((a, b) => a.roster.Game?.gameDate.getTime() ?? 0 - (b.roster.Game?.gameDate.getTime() ?? 0))
   );
@@ -25,12 +31,14 @@ export const getAthleteStandings = async () => {
       }))
       .map((j) => (j.color === j.standings[0]?.color ? "win" : j.color === j.standings[1]?.color ? "neutral" : "loss"));
 
+    const seasonRating = i.SeasonRating.find((j) => j.seasonId === BigInt(seasonId));
+
     return {
       athleteId: i.id,
       name: i.name,
-      rating: i.rating,
+      rating: seasonRating?.endRating ?? i.rating,
       position: i.position,
-      seasonChange: parseFloat((i.rating - i.initialRating).toFixed(2)),
+      seasonChange: parseFloat(((seasonRating?.endRating ?? 0) - (seasonRating?.startRating ?? 0)).toFixed(2)),
       lastGames: lastGameResults,
     };
   });

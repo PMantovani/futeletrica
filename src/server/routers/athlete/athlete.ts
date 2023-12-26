@@ -3,5 +3,5 @@ import { procedure, router } from "../../trpc";
 
 export const athleteRouter = router({
   findAll: procedure.query(() => findAllAthletes()),
-  getAthleteStandings: procedure.query(() => getAthleteStandings()),
+  getAthleteStandings: procedure.query(() => getAthleteStandings(2)),
 });
