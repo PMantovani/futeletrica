@@ -17,12 +17,10 @@ export const getAthleteStandings = async (seasonId: number) => {
   });
 
   const elegibleAthletes = athletes.filter((i) => i.rosters.length > 0 && i.isActive === true);
-  elegibleAthletes.forEach((i) =>
-    i.rosters.sort((a, b) => a.roster.Game?.gameDate.getTime() ?? 0 - (b.roster.Game?.gameDate.getTime() ?? 0))
-  );
 
   const result = elegibleAthletes.map((i) => {
     const lastGameResults = i.rosters
+      .toSorted((a, b) => (a.roster.Game?.gameDate?.getTime() ?? 0) - (b.roster.Game?.gameDate?.getTime() ?? 0))
       .filter((j) => (j.roster.Game?.GameResult.length ?? 0) > 0)
       .slice(-5)
       .map((j) => ({
