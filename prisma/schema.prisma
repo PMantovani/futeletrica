@@ -87,9 +87,11 @@ enum Color {
   white
   yellow
   blue
+  neutral
 }
 
 enum Position {
+  GOL
   ZAG
   VOL
   MEI

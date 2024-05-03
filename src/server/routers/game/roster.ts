@@ -8,7 +8,7 @@ export const rosterRouter = router({
     .input(
       z.object({
         gameId: z.bigint(),
-        athleteIds: z.bigint().array().length(15, "Need exactly 15 athletes to generate roster"),
+        athleteIds: z.bigint().array().length(17, "Need exactly 17 athletes to generate roster"),
       })
     )
     .mutation(({ input }) => generateRoster(input.athleteIds, input.gameId)),

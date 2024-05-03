@@ -70,10 +70,10 @@ const RosterAdmin: NextPage = () => {
             />
           </>
         )}
-        <Button onClick={generateRosters} disabled={selectedAthletes.length !== 15} className="mt-6">
+        <Button onClick={generateRosters} disabled={selectedAthletes.length !== 17} className="mt-6">
           Gerar escalação
         </Button>
-        {selectedAthletes.length < 15 && <p className="text-xs">Atletas selecionados: {selectedAthletes.length}/15</p>}
+        {selectedAthletes.length < 17 && <p className="text-xs">Atletas selecionados: {selectedAthletes.length}/17</p>}
       </div>
     </Main>
   );

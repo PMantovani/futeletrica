@@ -3,22 +3,20 @@ import { Athlete, Prisma } from "@prisma/client";
 import { prisma } from "../utils/prisma_client";
 
 export const findAllRostersByGameId = async (gameId: number) => {
-  const result2 = await prisma.roster.findMany({
+  const result = await prisma.roster.findMany({
     where: { gameId },
     include: {
       athletes: { include: { athlete: true } },
     },
   });
 
-  return result2.map((i) => {
-    return {
-      id: i.id,
-      gameId: i.gameId,
-      color: i.color,
-      athletes: i.athletes.map((j) => j.athlete),
-      createdAt: i.createdAt,
-    };
-  });
+  return result.map((i) => ({
+    id: i.id,
+    gameId: i.gameId,
+    color: i.color,
+    athletes: i.athletes.map((j) => j.athlete),
+    createdAt: i.createdAt,
+  }));
 };
 
 type AthleteWithColor = Athlete & { color: Color };
@@ -29,6 +27,7 @@ export const generateRoster = async (athleteIds: bigint[], gameId: bigint) => {
   const mei = selectedAthletes.filter((i) => i.position === "MEI");
   const vol = selectedAthletes.filter((i) => i.position === "VOL");
   const zag = selectedAthletes.filter((i) => i.position === "ZAG");
+  const gol = selectedAthletes.filter((i) => i.position === "GOL");
 
   const numberOfIterations = 1000;
 
@@ -49,7 +48,8 @@ export const generateRoster = async (athleteIds: bigint[], gameId: bigint) => {
     const volWithColor = vol.map((i, idx) => ({ ...i, color: colors[(nextIdx + idx) % colors.length].id }));
     nextIdx = (ata.length + mei.length + vol.length) % colors.length;
     const zagWithColor = zag.map((i, idx) => ({ ...i, color: colors[(nextIdx + idx) % colors.length].id }));
-    const fullRoster = [...ataWithColor, ...meiWithColor, ...volWithColor, ...zagWithColor];
+    const golWithColor = gol.map<AthleteWithColor>((i) => ({ ...i, color: 'neutral' }));
+    const fullRoster = [...ataWithColor, ...meiWithColor, ...volWithColor, ...zagWithColor, ...golWithColor];
     const sumScore = (prev: number, cur: AthleteWithColor) => prev + (cur.rating ?? 6);
     const scores = colors.map((color) => fullRoster.filter((i) => i.color === color.id).reduce(sumScore, 0));
     const highest = Math.max(...scores);

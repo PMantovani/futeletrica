@@ -13,5 +13,5 @@ export const colorLabelsMap = colors.reduce(
 
 export type ColorObj = (typeof colors)[number];
 
-export const colorSchema = z.enum(["white", "blue", "yellow"]);
+export const colorSchema = z.enum(["white", "blue", "yellow", "neutral"]);
 export type Color = z.infer<typeof colorSchema>;

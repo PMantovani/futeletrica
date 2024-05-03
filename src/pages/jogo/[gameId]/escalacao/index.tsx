@@ -10,6 +10,7 @@ import { ssg } from "@/server/utils/ssg_helper";
 import { trpc } from "@/utils/trpc";
 import { useRouter } from "next/router";
 import { validateRouterQueryToNumber } from "@/utils/validate_router_query";
+import { positionSort } from "@/models/position";
 
 export default function Home() {
   const router = useRouter();
@@ -19,9 +20,15 @@ export default function Home() {
   const rosterQuery = trpc.game.roster.findAllByGameId.useQuery(gameIdNumber);
 
   const [selectedColor, setSelectedColor] = useState(colors[0] as ColorObj);
+  const colorIdx = colors.findIndex((i) => i.id === selectedColor.id);
 
-  const athletes = rosterQuery.data?.find((i) => i.color === selectedColor.id)?.athletes;
-  athletes?.sort((a, b) => b.position.localeCompare(a.position) || a.name.localeCompare(b.name));
+  const athletesWithoutGk = rosterQuery.data?.find((i) => i.color === selectedColor.id)?.athletes ?? [];
+  const allGk = rosterQuery.data?.find((i) => i.color === "neutral")?.athletes;
+  const gk = allGk?.[(colorIdx + gameIdNumber) % allGk.length];
+  
+  const athletes = gk ? [...athletesWithoutGk, gk!] : athletesWithoutGk;
+  
+  athletes?.sort((a, b) => positionSort(a.position, b.position) || a.name.localeCompare(b.name));
 
   const calculateRosterAvg = () =>
     ((athletes?.reduce((prev, cur) => prev + (cur.rating ?? 0), 0) ?? 0) / (athletes?.length ?? 1)).toFixed(3);
