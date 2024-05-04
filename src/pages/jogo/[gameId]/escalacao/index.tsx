@@ -31,7 +31,7 @@ export default function Home() {
   athletes?.sort((a, b) => positionSort(a.position, b.position) || a.name.localeCompare(b.name));
 
   const calculateRosterAvg = () =>
-    ((athletes?.reduce((prev, cur) => prev + (cur.rating ?? 0), 0) ?? 0) / (athletes?.length ?? 1)).toFixed(3);
+    (athletesWithoutGk.reduce((prev, cur) => prev + (cur.rating ?? 0), 0) / (athletesWithoutGk.length || 1)).toFixed(3);
 
   if (!gameQuery.data || !rosterQuery.data) {
     throw new Error("Data was not prefetched during SSG");

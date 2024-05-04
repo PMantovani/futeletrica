@@ -107,7 +107,7 @@ export default function Home() {
     if (results.length > 1) {
       const lastGame = results[results.length - 1];
       const secondLastGame = results[results.length - 2];
-      const colorCount: Record<Color, number> = { white: 0, blue: 0, yellow: 0 };
+      const colorCount: Record<Color, number> = { white: 0, blue: 0, yellow: 0, neutral: 0 };
       colorCount[lastGame.color1] = colorCount[lastGame.color1] + 1;
       colorCount[lastGame.color2] = colorCount[lastGame.color2] + 1;
       colorCount[secondLastGame.color1] = colorCount[secondLastGame.color1] + 1;
