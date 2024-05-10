@@ -66,7 +66,8 @@ export const generateRoster = async (athleteIds: bigint[], gameId: bigint) => {
 };
 
 const storeBestRostersInDb = async (bestRosters: AthleteWithColor[], gameId: bigint) => {
-  const formattedRosters: Prisma.RosterCreateInput[] = colors.map((color) => {
+  const neutralColor = { id: 'neutral', label: 'Neutral' } as const;
+  const formattedRosters: Prisma.RosterCreateInput[] = [...colors, neutralColor].map((color) => {
     const athletes = bestRosters.filter((i) => i.color === color.id);
     const roster: Prisma.RosterCreateInput = {
       color: color.id,
