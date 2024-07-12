@@ -176,33 +176,33 @@ export default function AthleteSummaryPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-auto flex-col items-center">
-              <div className="text-sm text-textMedium">Gols pró - time</div>
+              <div className="text-center text-sm text-textMedium">Gols pró - time</div>
               <div className="flex items-baseline">
                 <div className="text-xl font-bold text-textHigh">{stats.goalsScoredAvg.toFixed(1)}</div>
                 <div className="text-sm text-textLow">/jogo</div>
               </div>
             </div>
             <div className="flex flex-auto flex-col items-center">
-              <div className="text-sm text-textMedium">Gols contra - time</div>
+              <div className="text-center text-sm text-textMedium">Gols contra - time</div>
               <div className="flex items-baseline">
                 <div className="text-xl font-bold text-textHigh">{stats.goalsAgainstAvg.toFixed(1)}</div>
                 <div className="text-sm text-textLow">/jogo</div>
               </div>
             </div>
             <div className="flex flex-auto flex-col items-center">
-              <div className="text-sm text-textMedium">Maior sequência de vitórias</div>
+              <div className="text-center text-sm text-textMedium">Maior sequência de vitórias</div>
               <div className="text-xl font-bold text-textHigh">{stats.largestVictorySequence}</div>
             </div>
             <div className="flex flex-auto flex-col items-center">
-              <div className="text-sm text-textMedium">Maior sequência sem perder</div>
+              <div className="text-center text-sm text-textMedium">Maior sequência sem perder</div>
               <div className="text-xl font-bold text-textHigh">{stats.largestUndefeatedSequence}</div>
             </div>
             <div className="flex flex-auto flex-col items-center">
-              <div className="text-sm text-textMedium">Número de jogos</div>
+              <div className="text-center text-sm text-textMedium">Número de jogos</div>
               <div className="text-xl font-bold text-textHigh">{stats.numberOfGamesPlayed}</div>
             </div>
             <div className="flex flex-auto flex-col items-center">
-              <div className="text-sm text-textMedium">Presença</div>
+              <div className="text-center text-sm text-textMedium">Presença</div>
               <div className="text-xl font-bold text-textHigh">{(stats.presence * 100).toFixed(0) + "%"}</div>
             </div>
           </div>
