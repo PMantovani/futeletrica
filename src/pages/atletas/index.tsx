@@ -3,6 +3,7 @@ import { Header } from "@/components/header";
 import { PageHead } from "@/components/page_head";
 import { trpc } from "@/utils/trpc";
 import { type VariantProps, cva } from "class-variance-authority";
+import Link from "next/link";
 import React, { useState } from "react";
 
 export default function Atletas() {
@@ -63,8 +64,10 @@ export default function Atletas() {
                         className={`border-b border-solid border-neutral-800 text-yellow last-of-type:border-0`}
                       >
                         <Cell intent={intent} className="whitespace-nowrap text-start">
-                          <span className="mr-4">{idx + 1}</span>
-                          <span>{athlete.name}</span>
+                          <Link href={`/atletas/${athlete.athleteId}`} target="_blank">
+                            <span className="mr-4">{idx + 1}</span>
+                            <span>{athlete.name}</span>
+                          </Link>
                         </Cell>
                         <Cell intent={intent}>{athlete.position}</Cell>
                         <Cell intent={intent}>{athlete.rating.toFixed(2)}</Cell>

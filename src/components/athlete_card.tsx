@@ -2,6 +2,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Color } from "@/models/color";
 import { Athlete } from "@prisma/client";
+import { AthleteCardImage } from "./athlete_card_image";
 
 interface Props {
   athlete: Athlete;
@@ -10,30 +11,16 @@ interface Props {
 }
 
 export const AthleteCard: React.FC<Props> = (props) => {
-  const [imgSrc, setImgSrc] = useState(require(`public/images/athlete_cards/white/fallback.png`));
-  const [isFallback, setIsFallback] = useState(false);
   const [isInitial, setIsInitial] = useState(true);
-  const color = props.athlete.position === 'GOL' ? 'neutral' : props.color;
-
-  const recalculateImgSrc = () => {
-    setIsInitial(false);
-    try {
-      setImgSrc(require(`public/images/athlete_cards/${color}/${props.athlete.id}.png`));
-      setIsFallback(false);
-    } catch (err) {
-      setIsFallback(true);
-      setImgSrc(require(`public/images/athlete_cards/${props.color}/fallback.png`));
-    }
-  };
-
-  useEffect(() => {
-    recalculateImgSrc();
-  }, []);
 
   useEffect(() => {
     setIsInitial(true);
-    setTimeout(() => recalculateImgSrc(), 500);
+    setTimeout(() => {
+      setIsInitial(false);
+    }, 500);
   }, [props.color]);
+
+  const colorInCard = props.athlete.position === "GOL" ? "neutral" : props.color;
 
   switch (props.idx) {
     case 0:
@@ -46,8 +33,7 @@ export const AthleteCard: React.FC<Props> = (props) => {
             (isInitial ? `md:left-[42.5%] ` : `md:left-[42.5%] `)
           }
         >
-          <Image src={imgSrc} alt="Card do atleta"></Image>
-          {isFallback && <FallbackName name={props.athlete.name} color={props.color} />}
+          <AthleteCardImage athleteId={props.athlete.id} athleteName={props.athlete.name} color={colorInCard} />
         </div>
       );
     case 1:
@@ -60,8 +46,7 @@ export const AthleteCard: React.FC<Props> = (props) => {
             (isInitial ? `md:left-[42.5%] ` : `md:left-[25%] `)
           }
         >
-          <Image src={imgSrc} alt="Card do atleta"></Image>
-          {isFallback && <FallbackName name={props.athlete.name} color={props.color} />}
+          <AthleteCardImage athleteId={props.athlete.id} athleteName={props.athlete.name} color={colorInCard} />
         </div>
       );
     case 2:
@@ -74,8 +59,7 @@ export const AthleteCard: React.FC<Props> = (props) => {
             (isInitial ? `md:left-[42.5%] ` : `md:left-[60%] `)
           }
         >
-          <Image src={imgSrc} alt="Card do atleta"></Image>
-          {isFallback && <FallbackName name={props.athlete.name} color={props.color} />}
+          <AthleteCardImage athleteId={props.athlete.id} athleteName={props.athlete.name} color={colorInCard} />
         </div>
       );
     case 3:
@@ -89,8 +73,7 @@ export const AthleteCard: React.FC<Props> = (props) => {
             (isInitial ? `md:left-[42.5%] ` : `md:left-[25%] `)
           }
         >
-          <Image src={imgSrc} alt="Card do atleta"></Image>
-          {isFallback && <FallbackName name={props.athlete.name} color={props.color} />}
+          <AthleteCardImage athleteId={props.athlete.id} athleteName={props.athlete.name} color={colorInCard} />
         </div>
       );
 
@@ -105,8 +88,7 @@ export const AthleteCard: React.FC<Props> = (props) => {
             (isInitial ? `md:left-[42.5%] ` : `md:left-[60%] `)
           }
         >
-          <Image src={imgSrc} alt="Card do atleta"></Image>
-          {isFallback && <FallbackName name={props.athlete.name} color={props.color} />}
+          <AthleteCardImage athleteId={props.athlete.id} athleteName={props.athlete.name} color={colorInCard} />
         </div>
       );
 
@@ -121,23 +103,9 @@ export const AthleteCard: React.FC<Props> = (props) => {
             (isInitial ? `md:left-[42.5%] ` : `md:left-[42.5%] `)
           }
         >
-          <Image src={imgSrc} alt="Card do atleta"></Image>
-          {isFallback && <FallbackName name={props.athlete.name} color={props.color} />}
+          <AthleteCardImage athleteId={props.athlete.id} athleteName={props.athlete.name} color={colorInCard} />
         </div>
       );
   }
   return <></>;
-};
-
-const FallbackName: React.FC<{ name: string; color: Color }> = ({ name, color }) => {
-  return (
-    <div
-      className={
-        `absolute top-[56%] mx-auto w-full px-[10%] text-center font-bold uppercase transition-all duration-500 xl:text-xl ` +
-        `${color === "white" ? "text-whiteCardText" : color === "yellow" ? "text-yellowCardText" : "text-white"}`
-      }
-    >
-      {name}
-    </div>
-  );
 };
