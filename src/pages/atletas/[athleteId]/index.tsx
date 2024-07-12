@@ -95,7 +95,7 @@ export default function AthleteSummaryPage() {
       <main className="mx-auto flex h-screen max-w-3xl flex-col bg-surface">
         <Header />
         <div className="px-4 pb-4">
-          <div className="flex gap-6">
+          <div className="flex gap-4">
             <div className="w-40">
               <AthleteCardImage athleteId={athleteId} athleteName={stats.name} color="yellow" />
             </div>
@@ -114,7 +114,7 @@ export default function AthleteSummaryPage() {
                   </div>
                 </div>
               </div>
-              <div className="flex justify-between gap-4">
+              <div className="flex justify-between gap-2">
                 <div className="flex flex-auto flex-col">
                   <div className="text-sm text-textLow">Ranking</div>
                   <div className="flex items-baseline">
@@ -123,7 +123,7 @@ export default function AthleteSummaryPage() {
                   </div>
                 </div>
                 <div className="flex flex-auto flex-col">
-                  <div className="text-sm text-textLow">Ranking absoluto</div>
+                  <div className="whitespace-nowrap text-sm text-textLow">Ranking abs.</div>
                   <div className="flex items-baseline">
                     <div className="text-xl text-textHigh">#{stats.absoluteRankingPosition}</div>
                     <div className="text-sm text-textLow">/{stats.totalPeopleInRanking}</div>
