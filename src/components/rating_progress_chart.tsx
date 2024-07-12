@@ -1,4 +1,5 @@
 import { AthleteSeasonSummary } from "@/models/athlete_season_summary";
+import { getCssColorVariable } from "@/utils/functions";
 import {
   CategoryScale,
   Chart,
@@ -22,11 +23,11 @@ type Props = {
 };
 
 export const RatingProgressChart: React.FC<Props> = (props) => {
-  const primaryColorHigh = getComputedStyle(document.documentElement).getPropertyValue("--color-textHigh");
-  const primaryColorLow = getComputedStyle(document.documentElement).getPropertyValue("--color-textLow");
-  const neutral = getComputedStyle(document.documentElement).getPropertyValue("--color-textNeutral");
-  const victory = getComputedStyle(document.documentElement).getPropertyValue("--color-positive");
-  const loss = getComputedStyle(document.documentElement).getPropertyValue("--color-negative");
+  const primaryColorHigh = getCssColorVariable("--color-textHigh");
+  const primaryColorLow = getCssColorVariable("--color-textLow");
+  const neutral = getCssColorVariable("--color-textNeutral");
+  const victory = getCssColorVariable("--color-positive");
+  const loss = getCssColorVariable("--color-negative");
   const defaultFont = {
     family: "NotoSans",
     size: 12,
