@@ -49,6 +49,7 @@ export default function AthleteSummaryPage() {
         currentSequence = 0;
       }
     }
+    largestSequence = Math.max(currentSequence, largestSequence);
 
     return largestSequence;
   }
@@ -66,6 +67,7 @@ export default function AthleteSummaryPage() {
         currentSequence = 0;
       }
     }
+    largestSequence = Math.max(currentSequence, largestSequence);
 
     return largestSequence;
   }
