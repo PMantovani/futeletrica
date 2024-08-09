@@ -18,6 +18,7 @@ model Athlete {
   rosters       AthletesOnRosters[]
   isActive      Boolean             @default(true)
   SeasonRating  SeasonRating[]
+  details       String?
 }
 
 model Game {
