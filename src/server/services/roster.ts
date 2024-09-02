@@ -39,18 +39,22 @@ export const generateRoster = async (athleteIds: bigint[], gameId: bigint) => {
     shuffleArray(mei);
     shuffleArray(vol);
     shuffleArray(zag);
-
+    const shuffledColors = [...colors];
+    shuffleArray(shuffledColors);
     let nextIdx = 0;
-    const ataWithColor = ata.map((i, idx) => ({ ...i, color: colors[(nextIdx + idx) % colors.length].id }));
-    nextIdx = ata.length % colors.length;
-    const meiWithColor = mei.map((i, idx) => ({ ...i, color: colors[(nextIdx + idx) % colors.length].id }));
-    nextIdx = (ata.length + mei.length) % colors.length;
-    const volWithColor = vol.map((i, idx) => ({ ...i, color: colors[(nextIdx + idx) % colors.length].id }));
-    nextIdx = (ata.length + mei.length + vol.length) % colors.length;
-    const zagWithColor = zag.map((i, idx) => ({ ...i, color: colors[(nextIdx + idx) % colors.length].id }));
-    const golWithColor = gol.map<AthleteWithColor>((i) => ({ ...i, color: 'neutral' }));
+
+    const findNextColorId = (idx: number) => shuffledColors[(nextIdx + idx) % shuffledColors.length].id;
+
+    const ataWithColor = ata.map((i, idx) => ({ ...i, color: findNextColorId(idx) }));
+    nextIdx = ata.length % shuffledColors.length;
+    const meiWithColor = mei.map((i, idx) => ({ ...i, color: findNextColorId(idx) }));
+    nextIdx = (ata.length + mei.length) % shuffledColors.length;
+    const volWithColor = vol.map((i, idx) => ({ ...i, color: findNextColorId(idx) }));
+    nextIdx = (ata.length + mei.length + vol.length) % shuffledColors.length;
+    const zagWithColor = zag.map((i, idx) => ({ ...i, color: findNextColorId(idx) }));
+    const golWithColor = gol.map<AthleteWithColor>((i) => ({ ...i, color: "neutral" }));
     const fullRoster = [...ataWithColor, ...meiWithColor, ...volWithColor, ...zagWithColor, ...golWithColor];
-    const sumScore = (prev: number, cur: AthleteWithColor) => prev + (cur.rating ?? 6);
+    const sumScore = (prev: number, cur: AthleteWithColor) => prev + cur.rating;
     const scores = colors.map((color) => fullRoster.filter((i) => i.color === color.id).reduce(sumScore, 0));
     const highest = Math.max(...scores);
     const lowest = Math.min(...scores);
@@ -66,7 +70,7 @@ export const generateRoster = async (athleteIds: bigint[], gameId: bigint) => {
 };
 
 const storeBestRostersInDb = async (bestRosters: AthleteWithColor[], gameId: bigint) => {
-  const neutralColor = { id: 'neutral', label: 'Neutral' } as const;
+  const neutralColor = { id: "neutral", label: "Neutral" } as const;
   const formattedRosters: Prisma.RosterCreateInput[] = [...colors, neutralColor].map((color) => {
     const athletes = bestRosters.filter((i) => i.color === color.id);
     const roster: Prisma.RosterCreateInput = {
