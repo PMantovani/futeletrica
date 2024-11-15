@@ -14,7 +14,7 @@ export const AthleteCardImage: React.FC<Props> = (props) => {
 
   useEffect(() => {
     setTimeout(() => recalculateImgSrc(), 500);
-  }, [props.color]);
+  }, [props.color, props.athleteId]);
 
   const recalculateImgSrc = () => {
     try {
@@ -29,10 +29,6 @@ export const AthleteCardImage: React.FC<Props> = (props) => {
   useEffect(() => {
     recalculateImgSrc();
   }, []);
-
-  useEffect(() => {
-    setTimeout(() => recalculateImgSrc(), 500);
-  }, [props.color]);
 
   return (
     <>
