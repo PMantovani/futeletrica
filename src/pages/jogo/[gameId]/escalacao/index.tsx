@@ -24,10 +24,10 @@ export default function Home() {
 
   const athletesWithoutGk = rosterQuery.data?.find((i) => i.color === selectedColor.id)?.athletes ?? [];
   const allGk = rosterQuery.data?.find((i) => i.color === "neutral")?.athletes;
-  const gk = allGk?.[(colorIdx + gameIdNumber) % allGk.length];
-  
+  const gk = allGk?.[colorIdx % allGk.length];
+
   const athletes = gk ? [...athletesWithoutGk, gk!] : athletesWithoutGk;
-  
+
   athletes?.sort((a, b) => positionSort(a.position, b.position) || a.name.localeCompare(b.name));
 
   const calculateRosterAvg = () =>
