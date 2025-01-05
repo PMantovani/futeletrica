@@ -143,6 +143,6 @@ export function getRatingsDeltaByPerformanceContribution(standings: Standings[],
   // We can't use rosterStanding.percentage directly because it's not based upon the number of points to avoid skewing of the ratings
   const equalityNumberOfGames = rosterStanding.games / 2;
   const unitVariation =
-    (rosterStanding.victories + rosterStanding.draws / 2 - equalityNumberOfGames) / equalityNumberOfGames;
+    (rosterStanding.victories + (rosterStanding.draws / 2) - equalityNumberOfGames) / equalityNumberOfGames;
   return unitVariation * deltaRatingPerPerformanceContribution;
 }
