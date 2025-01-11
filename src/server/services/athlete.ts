@@ -22,7 +22,7 @@ export const getAthleteStandings = async (seasonId: number) => {
   const gamesInSeason = await prisma.game.count({ where: { seasonId } });
   const thresholdPresence = gamesInSeason / 2;
 
-  const elegibleAthletes = athletes.filter((i) => i.rosters.length > thresholdPresence && i.isActive === true);
+  const elegibleAthletes = athletes.filter((i) => i.rosters.length >= thresholdPresence && i.isActive === true);
 
   const result = elegibleAthletes.map((i) => {
     const sortedArr = [...i.rosters].sort(
