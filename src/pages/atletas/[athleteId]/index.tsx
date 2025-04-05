@@ -98,7 +98,7 @@ export default function AthleteSummaryPage() {
         <Header />
         <div className="px-4 pb-4">
           <div className="flex gap-4">
-            <div className="w-40">
+            <div className="w-40 relative">
               <AthleteCardImage athleteId={athleteId} athleteName={stats.name} color="yellow" />
             </div>
             <div className="flex flex-auto flex-col gap-4">
