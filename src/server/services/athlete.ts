@@ -8,7 +8,7 @@ export const findAllAthletes = () => {
   return prisma.athlete.findMany();
 };
 
-export const getAthleteStandings = async (seasonId: number) => {
+export const getAthleteStandings = async (seasonId: number, thresholdPresence = 0.5) => {
   const athletes = await prisma.athlete.findMany({
     include: {
       SeasonRating: true,
@@ -20,9 +20,9 @@ export const getAthleteStandings = async (seasonId: number) => {
   });
 
   const gamesInSeason = await prisma.game.count({ where: { seasonId } });
-  const thresholdPresence = gamesInSeason / 2;
+  const thresholdPresenceGames = gamesInSeason * thresholdPresence;
 
-  const elegibleAthletes = athletes.filter((i) => i.rosters.length >= thresholdPresence && i.isActive === true);
+  const elegibleAthletes = athletes.filter((i) => i.rosters.length >= thresholdPresenceGames && i.isActive === true);
 
   const result = elegibleAthletes.map((i) => {
     const sortedArr = [...i.rosters].sort(
@@ -52,6 +52,10 @@ export const getAthleteStandings = async (seasonId: number) => {
   result.sort((a, b) => b.rating - a.rating);
 
   return result;
+};
+
+export const getAllAthletes = async (seasonId: number) => {
+  return getAthleteStandings(seasonId, 0);
 };
 
 export const getAthleteSeasonSummary = async (seasonId: number, athleteId: number): Promise<AthleteSeasonSummary> => {

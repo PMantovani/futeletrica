@@ -1,4 +1,5 @@
 import { ArrowIcon } from "@/components/arrow_icon";
+import { Button } from "@/components/button";
 import { Header } from "@/components/header";
 import { PageHead } from "@/components/page_head";
 import { trpc } from "@/utils/trpc";
@@ -20,71 +21,15 @@ export default function Atletas() {
       <PageHead description="Confira os atletas do maior time do sul do mundo!" />
       <main className="flex flex-col bg-neutral-900">
         <Header />
-        {!sortedData ? (
-          <div className="mx-auto text-yellow">Carregando...</div>
-        ) : (
-          <div className="flex flex-col">
-            <h2 className="mx-auto mb-4 text-xl font-bold text-yellow">Ranking de atletas</h2>
 
-            <div className="overflow-x-auto">
-              <table className="mx-auto">
-                <thead className="fill-neutral-500 text-center text-sm uppercase text-neutral-500">
-                  <tr className="border-b-2 border-solid border-neutral-800">
-                    <th className="px-3 py-3 even:bg-neutral-800">Atleta</th>
-                    <th className="px-3 py-3 even:bg-neutral-800">Pos.</th>
-                    <HeaderWithSort
-                      className="px-3 py-3 even:bg-neutral-800"
-                      onClick={() => setSortBy("overall")}
-                      showArrow={sortBy === "overall"}
-                    >
-                      <span className="inline md:hidden">Pont.</span>
-                      <span className="hidden md:inline">Pontuação</span>
-                    </HeaderWithSort>
-
-                    <HeaderWithSort
-                      className="px-3 py-3 even:bg-neutral-800"
-                      onClick={() => setSortBy("change")}
-                      showArrow={sortBy === "change"}
-                    >
-                      <span className="inline md:hidden">Var. temp.</span>
-                      <span className="hidden md:inline">Var. temporada</span>
-                    </HeaderWithSort>
-
-                    <th className="px-3 py-3 even:bg-neutral-800">Últ. jogos</th>
-                  </tr>
-                </thead>
-                <tbody className="text-center">
-                  {sortedData.map((athlete, idx) => {
-                    const intent = idx === 0 ? "first" : idx === 1 ? "second" : idx === 2 ? "third" : null;
-                    const seasonChangeResult =
-                      athlete.seasonChange < 0 ? "negative" : athlete.seasonChange === 0 ? "neutral" : "positive";
-                    return (
-                      <tr
-                        key={idx}
-                        className={`border-b border-solid border-neutral-800 text-yellow last-of-type:border-0`}
-                      >
-                        <Cell intent={intent} className="whitespace-nowrap text-start">
-                          <Link href={`/atletas/${athlete.athleteId}`} target="_blank">
-                            <span className="mr-4">{idx + 1}</span>
-                            <span>{athlete.name}</span>
-                          </Link>
-                        </Cell>
-                        <Cell intent={intent}>{athlete.position}</Cell>
-                        <Cell intent={intent}>{athlete.rating.toFixed(2)}</Cell>
-                        <Cell intent={intent}>
-                          <SeasonChangeCell intent={seasonChangeResult} value={athlete.seasonChange} />
-                        </Cell>
-                        <Cell intent={intent}>
-                          <ResultDotWrapper lastGames={athlete.lastGames} />
-                        </Cell>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+        <div className="flex flex-col items-center">
+          <Link href={`/atletas/ranking`}>
+            <Button>Ranking</Button>
+          </Link>
+          <Link href={`/atletas/todos`}>
+            <Button>Todos os atletas</Button>
+          </Link>
+        </div>
       </main>
     </>
   );
